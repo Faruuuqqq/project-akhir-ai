@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
+from app.api import routes
 
 app = FastAPI(
     title="RSNA Mammography AI",
@@ -17,6 +18,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routes
+app.include_router(routes.router, prefix="/api")
 
 @app.get("/api/health")
 def health_check():
