@@ -1,0 +1,427 @@
+# RSNA Mammography AI — MVP Product Requirements Document
+
+## Executive Summary
+
+**RSNA Mammography AI** is a medical-grade web application that uses deep learning to assist radiologists in breast cancer detection screening. The MVP focuses on delivering a functional end-to-end workflow where users can upload DICOM mammogram files (or try a demo), receive AI probability predictions, and view comprehensive analysis results with heatmap visualizations and BI-RADS recommendations.
+
+**Target Users:**
+1. Tech recruiters evaluating full-stack engineering capabilities
+2. Healthcare practitioners exploring AI-assisted diagnostics
+3. ML engineers reviewing deep learning methodology
+
+**Tech Stack:**
+- Frontend: Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion
+- Backend: FastAPI (Python), PyTorch, pydicom
+- Deployment: Vercel (frontend), Railway/Render (backend)
+
+---
+
+## MVP Scope
+
+### In-Scope (Phase 1)
+- Landing page (`/`) with clear value proposition
+- Screening workspace (`/screening`) with upload + demo mode
+- Full inference workflow (upload → analyze → results)
+- Animated heatmap overlay on DICOM images
+- Patient metadata display with BI-RADS recommendations
+- Informed consent modal with localStorage persistence
+- Privacy & medical disclaimer UI
+- Mock backend (simulated inference with 2-3 sec delay)
+- Best-practice error handling & loading states
+
+### Out-of-Scope (Post-MVP)
+- `/research` page (methodology + metrics detail)
+- User authentication / patient records
+- Multi-study batch processing
+- Real safetensors model integration (infrastructure ready, not implemented)
+- HIPAA compliance certification
+- Export / sharing functionality (button exists, not functional)
+
+---
+
+## User Flows
+
+### Flow 1: First-Time Visitor (Recruiter Perspective)
+
+1. User lands on `/`
+2. Reads headline + brief description
+3. Clicks "Try the Workspace"
+4. Routed to `/screening` (empty state)
+5. Informed consent modal appears (three checkboxes)
+6. User checks all three, clicks "Continue"
+7. Modal closes, localStorage marks `consentGiven: true`
+8. User sees upload zone and "Try Demo" button
+9. Clicks "Try Demo" → backend returns pre-computed sample study
+10. Image loads with metadata (Patient ID: DEMO-0001, etc.)
+11. Clicks "Analyze" → scanning animation plays (2-3 sec)
+12. Results appear: probability score, heatmap overlay, BI-RADS, interpretation
+13. User can click "Scan New Image" to restart workflow
+
+### Flow 2: File Upload (Medical Professional)
+
+1. User on `/screening` (post-consent)
+2. Drags .dcm file into upload zone (or clicks to browse)
+3. Frontend validates file format & size (<50MB)
+4. Sends to `POST /api/upload`
+5. Backend validates DICOM, extracts metadata, returns preview
+6. Image displays in DICOM viewer
+7. User clicks "Analyze"
+8. Scanning animation plays while backend simulates inference (2-3 sec)
+9. Results display with animated heatmap
+10. Medical disclaimer always visible
+
+---
+
+## Core Features
+
+### 1. Landing Page (`/`)
+- Hero section with contour line SVG background
+- One-paragraph value proposition
+- WHO statistic for credibility
+- Two CTAs: "Try the Workspace" (primary) + "View Research" link (secondary, future page)
+- Medical disclaimer in footer
+
+### 2. Screening Workspace (`/screening`)
+
+#### Upload Zone (Empty State)
+- Large dashed border (#CBD5E1)
+- Teal background tint on drag-over
+- Text: "Drop .dcm or .png mammogram here" or "Click to browse"
+- Privacy notice below: "Images processed in-memory, automatically deleted"
+- "Try Demo" button (loads pre-computed sample)
+
+#### DICOM Viewer
+- MRI Black background (#121417)
+- Cornerstone3D or canvas-based viewer
+- Centered image display
+- Scanning line animation during analysis (vertical line moving top-to-bottom)
+- Animated heatmap overlay (fades in after results, ~1.5s duration)
+
+#### Results Display (Post-Analysis)
+- **Probability Score:** Large text (64px JetBrains Mono)
+  - < 50%: Calm Blue (#3B82F6)
+  - > 50%: Muted Rose (#BE123C)
+- **Confidence Bar:** Horizontal progress bar below score
+- **Patient Metadata Card:**
+  - Patient ID, Study Date, View Type (CC/MLO)
+  - Age, Breast Density
+- **BI-RADS Card:**
+  - BI-RADS category (1-5) + description
+  - Recommendation for next steps
+  - Amber left border (#D97706)
+- **Interpretation Box:**
+  - "What this means" section with human-readable explanation
+  - Links to glossary terms (tooltips on hover)
+- **Medical Disclaimer:**
+  - Always visible without scrolling
+  - Warm Amber left border
+  - Italic, smaller text
+  - Clarifies: not a diagnosis, consult radiologist
+
+#### Action Buttons
+- "Scan New Image" → resets form, clears results
+- "Share Results" → mock button (not functional in MVP)
+
+### 3. Ethical Safeguards
+
+#### Informed Consent Modal
+- Appears once per session (remembered in localStorage)
+- Three mandatory checkboxes:
+  ✓ "I understand this is not a replacement for professional radiologist evaluation"
+  ✓ "I agree that results are for demonstration purposes only"
+  ✓ "I will not rely on this tool for medical decision-making"
+- Primary button: "I Understand, Continue" (enabled when all checked)
+- Secondary button: "Cancel"
+
+#### Privacy Notice
+- Displayed below upload zone
+- States: Images processed in-memory, automatically deleted, no retention
+
+#### Medical Disclaimer (Results Page)
+- Always visible below results
+- Clarifies AI probability is not clinical diagnosis
+- Recommends consulting radiologist
+
+---
+
+## Data Model
+
+### Study Object
+```
+{
+  fileId: string (unique identifier)
+  previewUrl: string (base64 encoded preview)
+  metadata: {
+    patientId: string
+    studyDate: string (YYYY-MM-DD)
+    viewType: string (CC, MLO, etc.)
+    age: number
+    breastDensity: string (A, B, C, D)
+  }
+}
+```
+
+### Analysis Result Object
+```
+{
+  probability: number (0-1)
+  probabilityPercent: string (e.g., "82.00%")
+  biRads: string (e.g., "BI-RADS 4")
+  biRadsDescription: string (e.g., "Suspicious abnormality")
+  biRadsRecommendation: string (next steps)
+  confidence: number (0-1)
+  explanation: string (human-readable interpretation)
+  heatmapUrl: string (base64 encoded heatmap)
+  processingTimeMs: number
+}
+```
+
+---
+
+## API Specification
+
+### Backend Endpoints
+
+#### `POST /api/upload`
+Validate and preview DICOM/PNG file.
+
+**Request:**
+```json
+{
+  "file": <binary file>,
+  "mode": "upload"
+}
+```
+
+**Response:**
+```json
+{
+  "fileId": "study_12345",
+  "previewUrl": "data:image/png;base64,...",
+  "metadata": {
+    "patientId": "PAT-10459",
+    "studyDate": "2024-01-15",
+    "viewType": "CC",
+    "age": 52,
+    "breastDensity": "B"
+  }
+}
+```
+
+#### `POST /api/analyze`
+Run inference on validated study file.
+
+**Request:**
+```json
+{
+  "fileId": "study_12345"
+}
+```
+
+**Response:**
+```json
+{
+  "probability": 0.82,
+  "probabilityPercent": "82.00%",
+  "biRads": "BI-RADS 4",
+  "biRadsDescription": "Suspicious abnormality",
+  "biRadsRecommendation": "Recommend further workup with ultrasound or MRI",
+  "confidence": 0.87,
+  "explanation": "The model detected irregular tissue density in the upper outer quadrant...",
+  "heatmapUrl": "data:image/png;base64,...",
+  "processingTimeMs": 2847
+}
+```
+
+#### `GET /api/demo`
+Return pre-computed demo study.
+
+**Request:**
+None
+
+**Response:**
+```json
+{
+  "fileId": "demo_sample_001",
+  "previewUrl": "data:image/png;base64,...",
+  "metadata": {
+    "patientId": "DEMO-0001",
+    "studyDate": "2024-01-01",
+    "viewType": "CC",
+    "age": 55,
+    "breastDensity": "C"
+  },
+  "analysis": {
+    "probability": 0.67,
+    "probabilityPercent": "67.00%",
+    "biRads": "BI-RADS 3",
+    "biRadsDescription": "Probably benign",
+    "biRadsRecommendation": "Short-term follow-up (6 months)",
+    "confidence": 0.91,
+    "explanation": "Findings suggest benign lesion with low malignancy risk...",
+    "heatmapUrl": "data:image/png;base64,..."
+  }
+}
+```
+
+---
+
+## Design Principles (Per DESIGN.md)
+
+- **Brand:** Clinical Precision & Empathetic Care
+- **Colors:** Trust Teal (#0F766E) for primary, Calm Blue for normal, Muted Rose for risk indicators
+- **Typography:** Plus Jakarta Sans for headings, Inter for body, JetBrains Mono for data
+- **Spacing:** 80px hero padding, 32px card padding, 8px base unit
+- **Anti-Slop Rules:**
+  - No placeholder text ("Lorem Ipsum")
+  - No stock photos
+  - Realistic medical copy (e.g., "Patient ID: 10459", "View: Craniocaudal (CC)")
+  - Medical disclaimer mandatory and always visible
+  - Never state "You have cancer" — use probabilistic language
+
+---
+
+## Frontend State Management
+
+**Context Structure:**
+```
+ScreeningContext {
+  currentStudy: { fileId, previewUrl, metadata }
+  analysisResult: { probability, biRads, explanation, heatmapUrl }
+  loading: boolean
+  error: string | null
+  consentGiven: boolean
+  setConsent: () => void
+  uploadFile: (file) => Promise
+  analyzeStudy: (fileId) => Promise
+  loadDemo: () => Promise
+  resetWorkflow: () => void
+}
+```
+
+---
+
+## Backend Architecture (FastAPI)
+
+### Directory Structure
+```
+backend/
+├── app/
+│   ├── __init__.py
+│   ├── main.py (FastAPI app initialization)
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── routes.py (endpoint definitions)
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── dicom_processor.py (pydicom handling)
+│   │   ├── inference.py (model loading + prediction)
+│   │   ├── heatmap_generator.py (heatmap overlay creation)
+│   ├── models/
+│   │   ├── schemas.py (Pydantic request/response models)
+│   ├── utils/
+│   │   ├── file_validator.py
+│   │   ├── error_handler.py
+├── models/ (directory for .safetensors or .pkl model file)
+├── requirements.txt
+├── .env (API keys, model paths)
+├── config.py (settings, CORS config)
+```
+
+### MVP Mock Implementation
+- `/api/analyze` returns hardcoded predictions with 2-3 second artificial delay
+- Model file path configured but not required (graceful fallback to mock)
+- When real model ready: swap inference logic, API contract unchanged
+
+---
+
+## Error Handling
+
+| Scenario | Frontend Message | HTTP Status |
+|----------|------------------|------------|
+| Invalid DICOM | "File must be a valid DICOM format." | 400 |
+| File too large | "File exceeds 50MB limit." | 413 |
+| Network timeout | "Connection failed. Please try again." | 504 |
+| Backend down | "Service temporarily unavailable. Try demo instead." | 503 |
+| Unknown error | "An error occurred. Please refresh and try again." | 500 |
+
+---
+
+## Success Criteria (MVP Done)
+
+- ✅ User can upload .dcm/.png file
+- ✅ User can click "Try Demo" and see sample results
+- ✅ Informed consent modal appears once per session
+- ✅ Scanning animation plays during analysis (2-3 sec)
+- ✅ Results display probability, BI-RADS, heatmap, interpretation
+- ✅ Medical disclaimer always visible
+- ✅ Responsive on mobile, tablet, desktop
+- ✅ No console errors or 404s
+- ✅ API returns correct JSON schema
+- ✅ Heatmap overlay animates smoothly on image
+
+---
+
+## Deployment Plan
+
+### Frontend (Vercel)
+1. Push code to GitHub
+2. Connect Vercel project
+3. Set environment variable: `NEXT_PUBLIC_API_BASE_URL=<fastapi-backend-url>`
+4. Deploy on push to `main` branch
+
+### Backend (Railway/Render)
+1. Create FastAPI service
+2. Connect to GitHub repo
+3. Set environment variables: model path, CORS origins
+4. Deploy on push to `main` branch
+
+### Environment Variables
+
+**Frontend (.env.local):**
+```
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 (dev) or https://api.rsna-ai.com (prod)
+```
+
+**Backend (.env):**
+```
+FASTAPI_ENV=development
+MODEL_PATH=./models/model.safetensors
+CORS_ORIGINS=http://localhost:3000,https://rsna-ai.vercel.app
+MAX_FILE_SIZE=52428800 (50MB)
+INFERENCE_TIMEOUT=30
+```
+
+---
+
+## Timeline Estimate
+
+- Phase 1 (Infrastructure setup): 1-2 days
+- Phase 2 (Frontend MVP): 3-4 days
+- Phase 3 (Backend MVP): 2-3 days
+- Phase 4 (Integration & testing): 2 days
+- Phase 5 (Deployment): 1 day
+
+**Total: ~10-12 business days for MVP**
+
+---
+
+## Future Enhancements (Post-MVP)
+
+- `/research` page with BI-RADS explanation, model metrics, false positive/negative rates
+- Real safetensors model integration
+- Batch processing (multiple images)
+- Export results to PDF
+- Study history (localStorage-based for MVP, database later)
+- Webhook notifications for async processing
+- User authentication + role-based access
+- HIPAA compliance audit trail
+
+---
+
+## Notes
+
+- This MVP prioritizes **shipping speed** and **demonstration quality**. Code is production-ready but not production-deployed (no auth, no DB, mock model).
+- Design and ethics are embedded from day one (not afterthought). Every UI component reflects DESIGN.md principles.
+- Backend architecture is model-agnostic; swapping real inference for mock is a single function change.
+- All DICOM/image data is processed in-memory and deleted after response; no persistent storage in MVP.
