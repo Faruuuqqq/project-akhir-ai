@@ -1,77 +1,225 @@
 # DESIGN.md — RSNA Mammography AI
 
-## Brand
-- Name: RSNA Mammography AI (or custom name)
-- Identity: A state-of-the-art modern radiology clinic. Scientific precision meets human empathy. Clean, sterile, but deeply comforting and trustworthy.
-- Personality: Professional, precise, calming, transparent.
-- Tone: Empathetic but clinical. No hype, no exclamation points. State facts clearly. Never use panic-inducing language.
+> **Catatan:** Dokumen ini mencerminkan design system yang **aktual** di codebase, bukan spesifikasi ideal. Jika ada perbedaan antara dokumentasi dan kode, kode adalah sumber kebenaran.
 
-## Colors
-- Background: Clinical Pearl #FAFAFA (softer than pure white, reduces eye strain)
-- Surface: Pure White #FFFFFF
-- Surface Dark: MRI Black #121417 (used strictly for the DICOM image viewer area to maximize contrast)
-- Text Primary: Charcoal #1F2937
-- Text Secondary: Slate #64748B
-- Accent Primary: Trust Teal #0F766E (calming, medical, authoritative)
-- Accent Hover: Teal Dark #0F5F59
-- Accent Dim: rgba(15,118,110,0.06)
-- Semantic Negative (Normal): Calm Blue #3B82F6 (do not use bright green, use blue for "clear/normal" to feel clinical)
-- Semantic Positive (Cancer Detected): Muted Rose #BE123C (serious, alert, but not a neon "panic" red)
-- Warning/Disclaimer: Warm Amber #D97706
-- Border: Light Silver #E2E8F0
+## Brand DNA
+
+- **Identity:** Klinik radiologi modern. Presisi ilmiah bertemu empati manusia. Bersih, steril, tapi menenangkan dan terpercaya.
+- **Personality:** Profesional, presisi, kalem, transparan.
+- **Tone:** Empatis namun klinis. Tidak ada hype, tidak ada tanda seru. Nyatakan fakta dengan jelas. Jangan pernah menggunakan bahasa yang memicu kepanikan.
+
+## Color System
+
+### Palette Kustom
+
+| Token | Hex | Tailwind Class | Penggunaan |
+|-------|-----|----------------|------------|
+| `clinical-pearl` | `#FAFAFA` | `bg-clinical-pearl` | Latar halaman |
+| (white) | `#FFFFFF` | `bg-white` | Surface cards, modal |
+| `mri-black` | `#121417` | `bg-mri-black` | Latar DICOM viewer |
+| `charcoal` | `#1F2937` | `text-charcoal` | Teks utama (heading, body) |
+| `slate` | `#64748B` | `text-slate`, `bg-slate` | Teks sekunder, label |
+| `trust-teal` | `#0F766E` | `text-trust-teal`, `bg-trust-teal`, `border-trust-teal` | Aksen utama — tombol, link aktif, badge, progress bar |
+| `teal-dark` | `#0F5F59` | `bg-teal-dark` | Hover state tombol |
+| `calm-blue` | `#3B82F6` | `text-calm-blue`, `bg-calm-blue/10` | Probabilitas rendah / normal |
+| `muted-rose` | `#BE123C` | `text-muted-rose`, `bg-muted-rose` | Probabilitas tinggi / alert |
+| `warm-amber` | `#D97706` | `text-warm-amber`, `border-warm-amber` | Disclaimer, warning |
+| `light-silver` | `#E2E8F0` | `border-light-silver`, `bg-light-silver` | Border, skeleton loading |
+
+### Aturan Warna Semantik
+
+- **Low probability / Normal:** `calm-blue` (#3B82F6) — bukan hijau terang
+- **High probability / Indication:** `muted-rose` (#BE123C) — merah serius, bukan neon panic-red
+- **Disclaimer / Warning:** `warm-amber` (#D97706) — border kiri atau background tipis
+- **Error state:** `muted-rose` untuk border dan teks, background `bg-red-50` (Tailwind stock, belum dimigrasi ke kustom)
 
 ## Typography
-- Headings: Plus Jakarta Sans 600, tracking -0.02em (clean, geometric, highly legible)
-- Body: Inter 400, 15px, line-height 1.6
-- Data/Probabilities: JetBrains Mono 500, tabular-nums (crucial for showing the exact AI confidence scores and pF1 metrics)
-- Labels: Inter 500, 12px, uppercase, tracking 0.05em, Slate color
-- Disclaimer Text: Inter 400 italic, 12px, Slate color
+
+### Font Stack (via `next/font/google` + CSS)
+
+| Font | CSS Variable | Weight | Penggunaan |
+|------|-------------|--------|------------|
+| **Plus Jakarta Sans** | `--font-jakarta` | 400, 500, 600, 700 | Semua heading, brand name, label, badge |
+| **Inter** | `--font-inter` | 400, 500 | Body text, navigasi, button, paragraf |
+| **JetBrains Mono** | `--font-mono` | 400, 500 | Data numerik — probabilitas, BI-RADS, timestamp, patient ID |
+
+### Spesifikasi per Elemen
+
+| Elemen | Font | Size | Weight | Letter-spacing | Lainnya |
+|--------|------|------|--------|----------------|---------|
+| Hero h1 | Jakarta | `5xl md:6xl` | bold | `tracking-tight` | `leading-[1.1]` |
+| Section h2 | Jakarta | `3xl` atau `4xl` | bold | — | — |
+| Section h3 | Jakarta | `xl` | bold | — | — |
+| Sub-heading | Jakarta | `text-sm` | semibold | `uppercase tracking-[0.1em]` | Warna `text-slate` |
+| Body text | Inter | `text-base` (16px) | normal | — | `leading-relaxed` |
+| Label | Jakarta | `text-[10px]` atau `text-xs` | bold | `uppercase tracking-[0.15em]` | Warna `text-slate` |
+| Probability score | Mono | `5xl` (48px) atau `[5rem]` (80px) | medium | `tracking-tight` | `leading-none` |
+| Disclaimer | Inter | `text-xs` | italic | — | `text-slate` |
+| Default body | Inter | 16px | 400 | — | `line-height: 1.6` |
+| Default heading | Jakarta | varies | 600 | `-0.02em` | (dari globals.css) |
 
 ## Spacing
-- Hero/Header padding: 80px vertical
-- Section padding: 64px vertical
-- Card padding: 32px (generous breathing room to reduce cognitive load)
-- Grid gap: 24px
-- Base unit: 8px
 
-## Visual Texture
-- NO generic noise or gradient blobs (Anti-slop rule).
-- Topographical/Contour lines: Subtle SVG background in the hero section resembling mammogram tissue density lines (1px stroke, #E2E8F0 at 40% opacity).
-- Glassmorphism: Minimal. Only used for floating action bars over the dark DICOM viewer.
+- **Hero padding:** `pt-32 pb-24 px-6` (128px top, 96px bottom)
+- **Section padding:** `py-24 px-6` (96px vertical)
+- **Card padding:** `p-8` (32px)
+- **Grid gap:** `gap-6` (24px)
+- **Base unit:** 8px (semua spacing adalah kelipatan 8)
+- **Max content width:** `max-w-6xl` (1152px)
+- **Konten sempit:** `max-w-4xl` (896px) — research page
+- **Upload zone sempit:** `max-w-md` (448px) — saat kosong
 
-## Custom SVG Language
-- Stroke width: 1.5px
-- Stroke linecap: round
-- Color: Slate #64748B (default), Trust Teal #0F766E (active)
-- Style: Technical but rounded. Medical crosses, anatomical outlines, neural network nodes.
-- Required SVGs: Upload cloud, DICOM file icon, AI scanning nodes, Info tooltip (question mark in a circle).
+## Border Radius
+
+| Token | Value | Penggunaan |
+|-------|-------|------------|
+| `rounded-2xl` | **16px** | Cards utama (UploadZone, ResultsCard, MetadataCard, disclaimer, modal, feature cards) |
+| `rounded-xl` | **12px** | Icon container, pipeline cards |
+| `rounded-lg` | **8px** | Tombol, metadata row, skeleton, DICOM viewer container, error banner |
+| `rounded-md` | **6px** | Metadata row hover group |
+| `rounded-sm` | **2px** | Focus-visible outline |
+| `rounded-full` | **50%** | Badge, pill, progress bar, status dot |
+
+## Shadows
+
+| Token | Value | Tailwind | Penggunaan |
+|-------|-------|----------|------------|
+| `medical` | `0 4px 20px rgba(0,0,0,0.03)` | `shadow-medical` | Default card shadow |
+| `teal-glow` | `0 4px 14px rgba(15,118,110,0.25)` | `shadow-teal-glow` | Tombol primary, hover card |
+| `teal-glow-hover` | `0 8px 20px rgba(15,118,110,0.3)` | `shadow-teal-glow-hover` | Tombol primary hover |
+| `shadow-sm` | Tailwind default | `shadow-sm` | Navbar, footer, pipeline cards |
+| `shadow-inner` | Tailwind default | `shadow-inner` | Confidence bar track |
 
 ## Buttons
-- Primary (Upload/Scan): Trust Teal #0F766E background, White text. Subtle shadow: 0 4px 14px rgba(15,118,110,0.25). On hover: translateY(-1px), shadow expands to 20px blur. Smooth 250ms transition. 
-- Secondary: Pure White bg, 1px Light Silver border, Charcoal text. On hover: background shifts to Clinical Pearl.
-- Disabled (Processing): Slate #64748B at 50% opacity, no pointer events. Wait for AI processing to finish.
-- Corner Radius: 8px (structured but not aggressively sharp).
+
+### Primary (CTA)
+```
+bg-trust-teal text-white px-8 py-4 rounded-lg font-semibold
+shadow-teal-glow
+hover:bg-teal-dark hover:shadow-teal-glow-hover hover:-translate-y-1
+transition-all
+whileTap: scale-98 (Framer Motion spring)
+```
+
+### Secondary
+```
+border border-light-silver bg-white text-charcoal px-8 py-4 rounded-lg font-semibold
+hover:bg-clinical-pearl
+transition-all
+```
+
+### Disabled (Processing)
+```
+opacity-50 cursor-not-allowed bg-slate/50 text-white/70
+```
+
+### Variant Ukuran
+- **Default:** `px-8 py-4` (tombol utama di landing/screening)
+- **Compact:** `px-4 py-2 text-sm` (navbar)
+- **Compact medium:** `px-4 py-3` (upload/analyze)
 
 ## Cards & Containers
-- Layout Cards: Pure White #FFFFFF
-- Border: 1px solid #E2E8F0
-- Radius: 16px (soft, approachable)
-- Shadow: 0 4px 20px rgba(0,0,0,0.03) — very subtle, just enough for depth.
-- DICOM Viewer Container: MRI Black #121417 background, 0px radius (sharp corners for medical imagery), no borders. Image is centered.
 
-## Data & Results Display (CRITICAL)
-- Probability Score: Massive text (e.g., 64px) using JetBrains Mono. If < 50%, color is Calm Blue. If > 50%, color is Muted Rose.
-- Confidence Bar: A horizontal progress bar under the score. Fills from left to right.
-- AI Explanation Box: A secondary card below the score detailing "What this means". Must include a subtle Warm Amber left-border for the medical disclaimer.
+### Standar Card
+```html
+className="rounded-2xl border border-light-silver bg-white p-8 shadow-medical"
+```
 
-## Interactive Elements & Empty States
-- Upload Area (Empty State): Large dashed border (#CBD5E1), light Teal background tint on drag-over. Clear specific copy: "Drop .dcm or .png mammogram here".
-- Loading State: DO NOT use a generic spinning circle. Use a scanning line moving top-to-bottom over a placeholder breast outline, with text: "AI is analyzing tissue density...".
-- Tooltips: Essential for medical apps. Use on hover over terms like "Probabilistic F1" or "Malignant". Dark background, white text, 6px radius.
+### Hover Variant
+```html
+hover:shadow-teal-glow hover:border-trust-teal/30 transition-all
+```
 
-## Anti-Slop Rules (Strict Constraints)
-- 1. NO placeholder text ("Lorem Ipsum"). Use realistic medical copy (e.g., "Patient ID: 10459", "View: Craniocaudal (CC)").
-- 2. NO stock photos of smiling doctors pointing at laptops. Use abstract AI node graphics or high-fidelity UI mockups.
-- 3. Medical Disclaimer is MANDATORY and must be visible without scrolling on the results page.
-- 4. The UI must never state "You have cancer". It must state "AI Probability of Malignancy: X%". Tone matters.
-- 5. Max content width is 1024px. Keep the reading line lengths comfortable.
+### Accent Border
+- **Left border warning:** `border-l-4 border-warm-amber` (disclaimer, peringatan)
+- **Left border error:** `border-l-4 border-muted-rose` (error alerts)
+- **Left border info:** `border-l-4 border-trust-teal` (rekomendasi, info box)
+
+### Skeleton Loading
+```
+bg-light-silver rounded animate-pulse
+```
+Container: `rounded-2xl border border-light-silver bg-white p-8 shadow-medical space-y-4`
+
+### DICOM Viewer Container
+```
+bg-mri-black rounded-lg overflow-hidden
+```
+Image di-center dengan `object-contain`. Tidak ada border. Overlay loading dengan `bg-black bg-opacity-40`.
+
+## Animations (Framer Motion)
+
+| Elemen | Animasi | Durasi | Timing |
+|--------|---------|--------|--------|
+| Page entrance | Fade in + slide up (y: 20/30) | 0.6s–0.8s | `easeOut` |
+| Hero visual | Fade in + scale | 0.8s + 0.2s delay | `easeOut` |
+| Feature cards | Fade + slide up via `whileInView` | 0.7s | default |
+| Button hover | `transition-all` (transform, shadow, bg) | 300ms | ease |
+| Button click | `whileTap: scale=0.98` | spring `300, 20` | spring |
+| Upload zone drag | `scale: 1.03` | spring `300, 20` | spring |
+| Nav indicator | Layout animation | spring `300, 30` | spring |
+| Scanning line | Vertical sweep top-to-bottom | 2.5s repeat | `linear` |
+| Results stagger | Stagger children 0.08s | 0.4s each | `[0.22, 1, 0.36, 1]` |
+| Confidence bar fill | Width 0 → target | 1.5s | `[0.22, 1, 0.36, 1]` |
+| Heatmap fade | Opacity 0 → 0.6 | 1.5s | `easeOut` |
+
+## Icon System
+
+- **Library:** Material Symbols Outlined (Google Fonts CDN)
+- **Size:** `text-base`, `text-sm`, `text-2xl`, `text-3xl`, `text-[48px]`
+- **Warna:** Mengikuti `text-*` utility classes
+- **Icon yang digunakan:** `biotech`, `verified`, `neurology`, `speed`, `fact_check`, `cloud_upload`, `analytics`, `warning`, `error`, `arrow_forward`, `close`
+
+## Visual Texture
+
+- **NO** generic noise atau gradient blobs
+- **NO** stock photos
+- **Subtle SVG contours** di hero section — topographical lines menyerupai jaringan mammogram (stroke `#E2E8F0`, opacity 40%)
+- **Glassmorphism** minimal — hanya untuk floating bar di atas DICOM viewer jika diperlukan
+
+## Data & Results Display
+
+- **Probability Score:** `text-[5rem]` (80px) dengan JetBrains Mono, warna `calm-blue` jika < 50%, `muted-rose` jika ≥ 50%
+- **Confidence Bar:** Horizontal progress bar di bawah score, fill dari kiri ke kanan (1.5s animasi)
+- **AI Explanation Box:** Kartu sekunder dengan `border-l-4 border-warm-amber`, menjelaskan arti hasil
+- **Medical Disclaimer:** `text-xs italic text-slate` dengan `border-l-4 border-warm-amber`, **WAJIB** terlihat tanpa scroll di halaman hasil
+
+## States & Interaksi
+
+### Upload Area
+- **Idle:** `border-2 border-dashed border-light-silver`
+- **Drag-over:** Background tint teal tipis (`bg-trust-teal/5`), scale 1.03
+- **Copy:** "Letakkan file .dcm atau .png mammogram di sini"
+
+### Loading State
+- **Bukan** spinning circle generik
+- Scanning line vertikal (gradien teal) bergerak top-to-bottom di atas placeholder payudara
+- Teks: "AI sedang menganalisis jaringan mamografi..."
+
+### Error State
+- Background `bg-red-50`, border kiri `border-l-4` (seharusnya `border-muted-rose`, saat ini masih `border-red-500`)
+- Auto-dismiss dalam 5 detik
+- Icon `warning` atau `error` dari Material Symbols
+
+### Empty State (Results)
+- Skeleton shimmer (`animate-pulse`) dengan 3 baris + 1 persegi panjang
+- Menunggu hasil analisis
+
+## Anti-Slop Rules
+
+1. **NO** placeholder text ("Lorem Ipsum"). Gunakan copy medis realistis dalam Bahasa Indonesia.
+2. **NO** stock photos. Gunakan SVG abstrak atau Material Icons.
+3. **Medical Disclaimer WAJIB** dan harus terlihat tanpa scroll di halaman hasil.
+4. UI tidak boleh mengatakan "Anda terkena kanker". Harus: "Probabilitas Keganasan AI: X%".
+5. **Max content width:** 1152px (`max-w-6xl`). Jaga panjang baris tetap nyaman dibaca.
+
+## Catatan Migrasi
+
+Komponen berikut masih menggunakan Tailwind stock colors dan perlu dimigrasi ke design tokens kustom:
+
+| Komponen | Masalah |
+|----------|---------|
+| `ConsentModal.tsx` | `text-slate-900`, `text-slate-600`, `border-slate-200`, `bg-teal-700`, dll — juga masih berbahasa Inggris |
+| `ErrorBoundary.tsx` | `bg-red-50`, `text-red-600`, `bg-red-600` — harusnya `muted-rose` |
+| `screening/page.tsx` error banner | `border-red-500`, `bg-red-50`, `text-red-600` — harusnya `muted-rose` |
+| `research/page.tsx` disclaimer | `bg-orange-50` — harusnya `bg-warm-amber/10` |
