@@ -25,18 +25,33 @@ export interface UploadResponse {
 }
 
 /**
+ * Structured finding detected by AI analysis
+ */
+export interface FindingDetail {
+  type: string;
+  location: string;
+  side: string;
+  characteristics: string[];
+  sizeMm?: number;
+  biRadsAssessment: string;
+}
+
+/**
  * AI analysis result for a single mammogram
  */
 export interface AnalysisResult {
-  probability: number; // Raw probability (0.0 to 1.0)
-  probabilityPercent: number; // Percentage (0 to 100)
-  biRads: 1 | 2 | 3 | 4 | 5; // BI-RADS category
-  biRadsDescription: string; // Human-readable description
-  biRadsRecommendation: string; // Clinical recommendation
-  confidence: number; // Model confidence (0.0 to 1.0)
-  explanation: string; // Plain-English explanation of the result
-  heatmapUrl: string; // URL to attention/grad-CAM visualization
-  processingTimeMs: number; // Time taken for analysis in milliseconds
+  probability: number;
+  probabilityPercent: string;
+  biRads: string;
+  biRadsDescription: string;
+  biRadsRecommendation: string;
+  confidence: number;
+  explanation: string;
+  heatmapUrl: string;
+  processingTimeMs: number;
+  findings?: FindingDetail[];
+  breastComposition?: string;
+  impression?: string;
 }
 
 /**
