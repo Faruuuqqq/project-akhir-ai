@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /research
+Allow: /privacy
+Allow: /terms
+
+Disallow: /api/
+Disallow: /_next/
+Disallow: /screening
+
+Sitemap: https://rsna-ai.vercel.app/sitemap.xml
