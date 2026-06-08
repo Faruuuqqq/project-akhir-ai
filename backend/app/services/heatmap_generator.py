@@ -108,23 +108,15 @@ class HeatmapGenerator:
     
     @staticmethod
     def _create_heatmap_image(heatmap: np.ndarray) -> Image.Image:
-        """Create colored heatmap image from activation map."""
-        heatmap_img = Image.new('RGBA', (heatmap.shape[1], heatmap.shape[0]))
-        
-        for y in range(heatmap.shape[0]):
-            for x in range(heatmap.shape[1]):
-                val = heatmap[y, x]
-                if val > 0.1:
-                    # Color gradient: Calm Blue (low) -> Muted Rose (high)
-                    # Blue: RGB(59, 130, 246) at val=0
-                    # Rose: RGB(190, 18, 60) at val=1
-                    r = int((190 - 59) * val + 59)
-                    g = int((18 - 130) * val + 130)
-                    b = int((60 - 246) * val + 246)
-                    alpha = int(val * 180)
-                    heatmap_img.putpixel((x, y), (r, g, b, alpha))
-        
-        return heatmap_img
+        """Create colored heatmap image from activation map (vectorized)."""
+        h, w = heatmap.shape
+        mask = heatmap > 0.1
+        rgba = np.zeros((h, w, 4), dtype=np.uint8)
+        rgba[mask, 0] = ((190 - 59) * heatmap[mask] + 59).astype(np.uint8)
+        rgba[mask, 1] = ((18 - 130) * heatmap[mask] + 130).astype(np.uint8)
+        rgba[mask, 2] = ((60 - 246) * heatmap[mask] + 246).astype(np.uint8)
+        rgba[mask, 3] = (heatmap[mask] * 180).astype(np.uint8)
+        return Image.fromarray(rgba, mode='RGBA')
     
     @staticmethod
     def _generate_synthetic_heatmap(shape: tuple, probability: float) -> np.ndarray:

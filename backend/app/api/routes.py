@@ -79,8 +79,8 @@ async def analyze_file(request: AnalyzeRequest) -> AnalysisResponse:
         if not study_data:
             raise HTTPException(status_code=404, detail="Study not found or session expired")
         
-        # Simulate inference delay (MVP)
-        await asyncio.sleep(2.5)
+        # Small delay for realistic UX
+        await asyncio.sleep(0.3)
         
         # Run inference
         start_time = time.time()
