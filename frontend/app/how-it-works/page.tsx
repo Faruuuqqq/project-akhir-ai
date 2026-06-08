@@ -8,7 +8,7 @@ const PIPELINE_STEPS = [
     icon: 'upload_file',
     title: 'Unggah Citra Mamografi',
     desc: 'Pasien atau tenaga medis mengunggah citra DICOM atau PNG melalui portal aman. Sistem mendeteksi format, memvalidasi integritas file, dan mengekstrak metadata klinis (usia, kepadatan jaringan, view).',
-    detail: 'Format: .DCM / .PNG | Maks. 50MB | Dienkripsi端-to-end',
+    detail: 'Format: .DCM / .PNG | Maks. 50MB | Dienkripsi end-to-end',
   },
   {
     icon: 'transform',

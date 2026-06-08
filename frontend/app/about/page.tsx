@@ -129,7 +129,7 @@ export default function AboutPage() {
         </section>
 
         {/* Disclaimer */}
-        <section className="bg-amber-50 border-l-4 border-warning rounded-r-2xl p-6 md:p-8">
+        <section className="bg-warm-amber/10 border-l-4 border-warning rounded-r-2xl p-6 md:p-8">
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-warning shrink-0 mt-0.5">warning</span>
             <div>

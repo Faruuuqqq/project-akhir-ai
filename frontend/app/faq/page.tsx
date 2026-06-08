@@ -34,7 +34,7 @@ const FAQS: FaqItem[] = [
   {
     category: 'Teknis & Data',
     q: 'Apakah data pasien saya aman?',
-    a: 'Ya. Data dienkripsi端-to-end menggunakan protokol HTTPS/TLS. File dihapus dari memori server segera setelah analisis selesai. Tidak ada data yang disimpan secara permanen. Sistem kami tidak menggunakan database — hanya cache in-memory ephemeral. Lihat kebijakan privasi untuk detail lebih lanjut.',
+    a: 'Ya. Data dienkripsi end-to-end menggunakan protokol HTTPS/TLS. File dihapus dari memori server segera setelah analisis selesai. Tidak ada data yang disimpan secara permanen. Sistem kami tidak menggunakan database — hanya cache in-memory ephemeral. Lihat kebijakan privasi untuk detail lebih lanjut.',
   },
   {
     category: 'Teknis & Data',

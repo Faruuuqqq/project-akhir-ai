@@ -10,8 +10,9 @@ export function Navbar() {
 
   const navLinks = [
     { name: 'Beranda', href: '/' },
-    { name: 'Ruang Kerja', href: '/screening' },
-    { name: 'Metodologi', href: '/research' },
+    { name: 'Skrining', href: '/screening' },
+    { name: 'Cara Kerja', href: '/how-it-works' },
+    { name: 'FAQ', href: '/faq' },
   ];
 
   return (

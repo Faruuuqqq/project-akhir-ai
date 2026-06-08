@@ -15,20 +15,22 @@ export function Footer() {
           </p>
         </div>
         <div className="flex gap-12">
-          <div>
-            <h4 className="font-jakarta text-xs uppercase tracking-widest font-bold mb-4 text-charcoal">Produk</h4>
-            <ul className="space-y-3 text-sm text-slate">
-              <li><Link href="/screening" className="hover:text-trust-teal transition-colors">Analisis AI</Link></li>
-              <li><Link href="/research" className="hover:text-trust-teal transition-colors">Metodologi</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-jakarta text-xs uppercase tracking-widest font-bold mb-4 text-charcoal">Legal</h4>
-            <ul className="space-y-3 text-sm text-slate">
-              <li><Link href="/privacy" className="hover:text-trust-teal transition-colors">Kebijakan Privasi</Link></li>
-              <li><Link href="/terms" className="hover:text-trust-teal transition-colors">Syarat & Ketentuan</Link></li>
-            </ul>
-          </div>
+           <div>
+             <h4 className="font-jakarta text-xs uppercase tracking-widest font-bold mb-4 text-charcoal">Produk</h4>
+             <ul className="space-y-3 text-sm text-slate">
+               <li><Link href="/screening" className="hover:text-trust-teal transition-colors">Skrining AI</Link></li>
+               <li><Link href="/how-it-works" className="hover:text-trust-teal transition-colors">Cara Kerja</Link></li>
+               <li><Link href="/research" className="hover:text-trust-teal transition-colors">Metodologi</Link></li>
+             </ul>
+           </div>
+           <div>
+             <h4 className="font-jakarta text-xs uppercase tracking-widest font-bold mb-4 text-charcoal">Informasi</h4>
+             <ul className="space-y-3 text-sm text-slate">
+               <li><Link href="/faq" className="hover:text-trust-teal transition-colors">FAQ</Link></li>
+               <li><Link href="/about" className="hover:text-trust-teal transition-colors">Tentang</Link></li>
+               <li><Link href="/contact" className="hover:text-trust-teal transition-colors">Kontak</Link></li>
+             </ul>
+           </div>
         </div>
       </div>
     </footer>

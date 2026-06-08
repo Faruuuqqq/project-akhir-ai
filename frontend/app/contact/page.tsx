@@ -119,7 +119,7 @@ export default function ContactPage() {
                 <div className="w-16 h-16 rounded-2xl bg-trust-teal/5 flex items-center justify-center mx-auto mb-6">
                   <span className="material-symbols-outlined text-3xl text-trust-teal">check_circle</span>
                 </div>
-                <h2 className="font-jakarta text-2xl font-bold text-charcoal mb-3">Pesan Terkirim! 🎉</h2>
+                <h2 className="font-jakarta text-2xl font-bold text-charcoal mb-3">Pesan Terkirim!</h2>
                 <p className="text-sm text-slate mb-6 max-w-sm mx-auto">
                   Terima kasih, {form.name}. Tim kami akan menghubungi Anda melalui {form.email} dalam 1×24 jam.
                 </p>

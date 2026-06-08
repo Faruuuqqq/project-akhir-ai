@@ -112,9 +112,10 @@ export default function ResearchPage() {
                   Kami berkomitmen pada akurasi diagnostik melalui pemantauan metrik kesalahan yang ketat.
                 </p>
                 
-                <div className="p-5 bg-orange-50 border-l-4 border-warning rounded-r-lg">
+                <div className="p-5 bg-warm-amber/10 border-l-4 border-warning rounded-r-lg">
                   <div className="flex items-center gap-2 mb-2 text-warning">
-                    <span className="font-bold text-sm uppercase tracking-widest">⚠ Disclaimer</span>
+                    <span className="material-symbols-outlined text-sm">warning</span>
+                    <span className="font-bold text-sm uppercase tracking-widest">Disclaimer</span>
                   </div>
                   <p className="text-xs text-slate italic leading-relaxed mb-0">
                     AI ini bukan pengganti dokter. Semua hasil harus divalidasi oleh radiolog bersertifikat.
@@ -126,9 +127,7 @@ export default function ResearchPage() {
                 <div className="bg-white p-6 rounded-2xl border border-light-silver shadow-medical mb-6">
                   <div className="flex items-start gap-4">
                     <div className="p-3 bg-trust-teal/10 rounded-lg text-trust-teal shrink-0">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-11v6h2v-6h-2zm0-4v2h2V7h-2z" fill="currentColor"/>
-                      </svg>
+                      <span className="material-symbols-outlined">analytics</span>
                     </div>
                     <div>
                       <h4 className="font-jakarta text-lg font-bold text-charcoal mb-2 mt-0">Evaluasi Metrik: pF1</h4>
@@ -144,9 +143,7 @@ export default function ResearchPage() {
                 <div className="bg-white p-6 rounded-2xl border border-light-silver shadow-medical">
                   <div className="flex items-start gap-4">
                     <div className="p-3 bg-calm-blue/10 rounded-lg text-calm-blue shrink-0">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z" fill="currentColor"/>
-                      </svg>
+                      <span className="material-symbols-outlined">info</span>
                     </div>
                     <div>
                       <h4 className="font-jakarta text-lg font-bold text-charcoal mb-2 mt-0">Potensi Bias Data</h4>
