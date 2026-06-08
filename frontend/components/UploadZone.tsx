@@ -10,6 +10,7 @@
 import React, { useRef, useState } from 'react';
 import { useScreening } from '@/contexts/ScreeningContext';
 import { validateFile } from '@/lib/validators';
+import { motion } from 'framer-motion';
 
 /**
  * Props for UploadZone component
@@ -23,7 +24,7 @@ interface UploadZoneProps {
  * Main upload area with drag-drop and file validation
  */
 export function UploadZone({ onDemoClick }: UploadZoneProps) {
-  const { uploadFile, loading, error, clearError } = useScreening();
+  const { uploadFile, loading, error, clearError, consentGiven, setConsent } = useScreening();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -104,74 +105,105 @@ export function UploadZone({ onDemoClick }: UploadZoneProps) {
   const displayError = error || localError;
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full font-inter">
+      {/* Informed Consent Card */}
+      <div className="bg-white p-8 rounded-2xl shadow-medical border border-light-silver/50 mb-6">
+        <div className="flex items-center gap-2 mb-4 text-trust-teal">
+          <span className="material-symbols-outlined">fact_check</span>
+          <h2 className="font-jakarta text-sm font-bold uppercase tracking-[0.1em]">Persetujuan Pasien</h2>
+        </div>
+        <p className="text-xs leading-relaxed text-slate mb-6">
+          Saya mengonfirmasi bahwa data pasien telah dianonimkan sesuai dengan protokol HIPAA/GDPR dan pasien telah memberikan persetujuan untuk analisis berbasis kecerdasan buatan.
+        </p>
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <input
+            className="mt-0.5 w-4 h-4 rounded border-light-silver text-trust-teal focus:ring-trust-teal cursor-pointer"
+            type="checkbox"
+            checked={consentGiven}
+            onChange={(e) => setConsent(e.target.checked)}
+          />
+          <span className="text-sm font-medium text-charcoal select-none group-hover:text-trust-teal transition-colors">Saya menyetujui seluruh syarat & ketentuan medis.</span>
+        </label>
+      </div>
+
       {/* Upload Zone */}
-      <div
+      <motion.div
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        animate={{ scale: dragActive ? 1.03 : 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`rounded-lg border-2 border-dashed p-12 transition-all duration-200 ${
-          dragActive
-            ? 'border-teal-700 bg-blue-50'
-            : 'border-slate-300 bg-white'
-        } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          className={`rounded-2xl border-2 border-dashed p-16 transition-colors duration-300 flex flex-col items-center justify-center text-center ${
+            dragActive
+              ? 'border-trust-teal bg-trust-teal/5 shadow-teal-glow'
+              : 'border-light-silver bg-white hover:border-trust-teal/50 hover:bg-clinical-pearl'
+          } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+        onClick={handleBrowseClick}
       >
-        {/* Icon */}
-        <div className="text-center">
-          <div className="mb-4 text-4xl">🖼️</div>
-
-          {/* Heading */}
-          <h3 className="text-lg font-semibold text-slate-900">
-            Drop .dcm or .png mammogram here
-          </h3>
-
-          {/* Description */}
-          <p className="mt-2 text-sm text-slate-600">
-            or click to browse
-          </p>
-
-          {/* Button Group */}
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <button
-              onClick={handleBrowseClick}
-              disabled={loading}
-              className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Browse Files
-            </button>
-
-            <button
-              onClick={onDemoClick}
-              disabled={loading}
-              className="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-6 py-2 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Try Demo
-            </button>
-          </div>
-
-          {/* Privacy Notice */}
-          <p className="mt-6 text-xs italic text-slate-600">
-            Your files are processed securely and not stored after analysis.
-          </p>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".dcm,.png,.jpg,.jpeg"
+          className="hidden"
+          onChange={handleFileInputChange}
+          disabled={loading}
+        />
+        
+        {/* SVG Icon */}
+        <div className={`mb-6 transition-colors ${dragActive ? 'text-trust-teal' : 'text-slate'}`}>
+          <span className="material-symbols-outlined text-[48px]">cloud_upload</span>
         </div>
-      </div>
 
-      {/* Hidden File Input */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".dcm,.png,application/dicom,image/png"
-        onChange={handleFileInputChange}
-        className="hidden"
-        disabled={loading}
-      />
+        <h3 className="mb-2 font-jakarta text-xl font-bold text-charcoal">
+          {dragActive ? 'Lepaskan gambar untuk analisis' : 'Unggah Berkas Mamografi'}
+        </h3>
+        <p className="mb-8 text-sm text-slate font-medium">
+          Format: .DCM, .PNG (Maks. 50MB)
+        </p>
 
-      {/* Error Display */}
+        <button
+          className="rounded-lg bg-trust-teal px-8 py-3 font-semibold text-white shadow-teal-glow transition-all hover:bg-teal-dark hover:shadow-teal-glow-hover hover:-translate-y-[1px] tracking-wide"
+          disabled={loading}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!consentGiven) {
+              setLocalError("Mohon setujui syarat & ketentuan medis terlebih dahulu sebelum mengunggah.");
+              return;
+            }
+            handleBrowseClick();
+          }}
+        >
+          {loading ? 'Memproses...' : 'Pilih Berkas'}
+        </button>
+      </motion.div>
+
+      {/* Error Message */}
       {displayError && (
-        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
-          <p className="text-sm text-red-700">{displayError}</p>
+        <div className="mt-6 rounded-lg border-l-4 border-muted-rose bg-rose-50 p-5 flex items-start gap-3" role="alert" aria-live="polite">
+          <span className="material-symbols-outlined text-muted-rose" aria-hidden="true">error</span>
+          <p className="text-sm font-medium text-muted-rose">{displayError}</p>
         </div>
       )}
+
+      {/* Demo Option */}
+      <div className="mt-10 text-center">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate">Tidak ada berkas?</p>
+        <button
+          onClick={() => {
+            if (!consentGiven) {
+              setLocalError("Mohon setujui syarat & ketentuan medis terlebih dahulu.");
+              return;
+            }
+            onDemoClick();
+          }}
+          disabled={loading}
+          className="rounded-lg border border-light-silver bg-white px-8 py-3 font-semibold text-charcoal transition-all hover:bg-clinical-pearl disabled:opacity-50 hover:shadow-sm"
+        >
+          Coba Data Demo Klinis
+        </button>
+      </div>
     </div>
   );
 }

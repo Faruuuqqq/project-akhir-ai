@@ -19,10 +19,18 @@ module.exports = {
         'light-silver': '#E2E8F0',
       },
       fontFamily: {
-        'jakarta': ['Plus Jakarta Sans', 'sans-serif'],
-        'mono': ['JetBrains Mono', 'monospace'],
+        'jakarta': ['var(--font-jakarta)', 'sans-serif'],
+        'inter': ['var(--font-inter)', 'sans-serif'],
+        'mono': ['var(--font-mono)', 'monospace'],
       },
+      boxShadow: {
+        'medical': '0 4px 20px rgba(0,0,0,0.03)',
+        'teal-glow': '0 4px 14px rgba(15,118,110,0.25)',
+        'teal-glow-hover': '0 8px 20px rgba(15,118,110,0.3)',
+      }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 };

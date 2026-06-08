@@ -12,11 +12,17 @@ body {
   font-family: 'Inter', sans-serif;
   font-variant-numeric: tabular-nums;
   line-height: 1.6;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 600;
   letter-spacing: -0.02em;
+}
+
+@layer base {
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-trust-teal rounded-sm;
+  }
 }

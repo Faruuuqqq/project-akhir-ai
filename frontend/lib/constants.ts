@@ -47,24 +47,24 @@ export const API_TIMEOUT = 30000; // milliseconds (30 seconds)
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 /**
- * BI-RADS categories labels for UI display
+ * BI-RADS categories labels for UI display (Bahasa Indonesia)
  */
 export const BIRADS_LABELS = {
-  1: 'Negative',
-  2: 'Benign',
-  3: 'Probably Benign',
-  4: 'Suspicious',
-  5: 'Malignant',
+  1: 'Negatif',
+  2: 'Jinak',
+  3: 'Kemungkinan Jinak',
+  4: 'Mencurigakan',
+  5: 'Ganas',
 } as const;
 
 /**
- * Breast density labels mapping
+ * Breast density labels mapping (Bahasa Indonesia)
  */
 export const BREAST_DENSITY_LABELS = {
-  A: 'Almost entirely fatty',
-  B: 'Scattered fibroglandular densities',
-  C: 'Heterogeneously dense',
-  D: 'Extremely dense',
+  A: 'Hampir seluruhnya lemak',
+  B: 'Kepadatan fibroglandular tersebar',
+  C: 'Padat secara heterogen',
+  D: 'Sangat padat',
 } as const;
 
 /**

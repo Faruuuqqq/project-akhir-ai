@@ -6,16 +6,21 @@ import { COLORS } from '@/lib/constants';
 export const MedicalDisclaimer: React.FC = () => {
   return (
     <div
-      className="rounded-lg border-l-4 bg-orange-50 p-4"
-      style={{ borderColor: COLORS.warmAmber }}
+      className="rounded-lg border-l-4 bg-orange-50 p-5 shadow-sm"
+      style={{ borderColor: COLORS.warning }}
     >
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wider" style={{ color: COLORS.warmAmber }}>
-        ⚠️ Medical Disclaimer
-      </p>
+      <div className="flex items-center gap-2 mb-2" style={{ color: COLORS.warning }}>
+        <span className="material-symbols-outlined text-[20px]">warning</span>
+        <p className="text-xs font-bold uppercase tracking-[0.1em]">
+          Disclaimer Medis
+        </p>
+      </div>
       <p className="text-xs italic leading-relaxed text-slate">
-        This analysis is based on artificial intelligence and is <strong>NOT</strong> a clinical diagnosis. 
-        AI probability does not confirm or rule out cancer. Always consult a qualified radiologist for 
-        official diagnosis and treatment decisions.
+        Hasil ini dihasilkan oleh algoritma Artificial Intelligence (AI) dan dimaksudkan 
+        <strong> hanya untuk dukungan keputusan klinis investigasional</strong>. 
+        Sistem ini BUKAN pengganti diagnosis medis profesional. 
+        Semua temuan harus divalidasi dan dikonfirmasi oleh dokter spesialis radiologi 
+        atau onkologi bersertifikat sebelum pengambilan tindakan medis apa pun.
       </p>
     </div>
   );

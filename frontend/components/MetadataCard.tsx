@@ -10,33 +10,33 @@ interface MetadataCardProps {
 
 export const MetadataCard: React.FC<MetadataCardProps> = ({ metadata }) => {
   return (
-    <div className="rounded-2xl border border-light-silver bg-white p-6 shadow-sm">
-      <h3 className="mb-4 text-lg font-semibold text-charcoal">Study Information</h3>
+    <div className="rounded-2xl border border-light-silver bg-white p-8 shadow-medical font-inter">
+      <h3 className="mb-6 font-jakarta text-sm font-semibold uppercase tracking-[0.1em] text-slate">Informasi Studi Klinis</h3>
       
-      <div className="space-y-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate">Patient ID</p>
-          <p className="font-mono text-charcoal">{sanitizePatientId(metadata.patientId).replace('Patient ID: ', '')}</p>
+      <div className="space-y-2">
+        <div className="group hover:bg-clinical-pearl px-3 py-2 -mx-3 rounded-md transition-colors">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-slate group-hover:text-trust-teal transition-colors">ID Pasien</p>
+          <p className="font-mono text-sm font-medium text-charcoal">{sanitizePatientId(metadata.patientId).replace('Patient ID: ', '')}</p>
         </div>
         
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate">Study Date</p>
-          <p className="text-charcoal">{formatStudyDate(metadata.studyDate)}</p>
+        <div className="group hover:bg-clinical-pearl px-3 py-2 -mx-3 rounded-md transition-colors">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-slate group-hover:text-trust-teal transition-colors">Tanggal Akuisisi</p>
+          <p className="font-mono text-sm text-charcoal">{formatStudyDate(metadata.studyDate)}</p>
         </div>
         
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate">View Type</p>
-          <p className="text-charcoal">{getDICOMViewType(metadata.viewType)}</p>
+        <div className="group hover:bg-clinical-pearl px-3 py-2 -mx-3 rounded-md transition-colors">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-slate group-hover:text-trust-teal transition-colors">Tipe Tampilan (View)</p>
+          <p className="text-sm font-medium text-charcoal">{getDICOMViewType(metadata.viewType)}</p>
         </div>
         
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate">Age</p>
-          <p className="text-charcoal">{metadata.age} years</p>
+        <div className="group hover:bg-clinical-pearl px-3 py-2 -mx-3 rounded-md transition-colors">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-slate group-hover:text-trust-teal transition-colors">Usia</p>
+          <p className="font-mono text-sm text-charcoal">{metadata.age} <span className="font-sans text-xs text-slate">tahun</span></p>
         </div>
         
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate">Breast Density</p>
-          <p className="text-charcoal">{getBreastDensityLabel(metadata.breastDensity)}</p>
+        <div className="group hover:bg-clinical-pearl px-3 py-2 -mx-3 rounded-md transition-colors">
+          <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-slate group-hover:text-trust-teal transition-colors">Kepadatan Jaringan (Density)</p>
+          <p className="text-sm font-medium text-charcoal">{getBreastDensityLabel(metadata.breastDensity)}</p>
         </div>
       </div>
     </div>

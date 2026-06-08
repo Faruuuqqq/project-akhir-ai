@@ -34,10 +34,11 @@ export const HeatmapOverlay: React.FC<HeatmapOverlayProps> = ({ heatmapUrl, isVi
   return (
     <motion.canvas
       ref={canvasRef}
-      className="absolute inset-0 h-full w-full object-contain mix-blend-screen"
+      className="absolute inset-0 h-full w-full object-contain"
       initial={{ opacity: 0 }}
       animate={{ opacity: 0.6 }}
       transition={{ duration: 1.5, ease: "easeOut" }}
+      style={{ mixBlendMode: 'screen' }}
     />
   );
 };
