@@ -1,5 +1,13 @@
 from pydantic import BaseModel
 
+class FindingDetail(BaseModel):
+    type: str
+    location: str
+    side: str
+    characteristics: list[str]
+    sizeMm: int | None = None
+    biRadsAssessment: str
+
 class PatientMetadata(BaseModel):
     patientId: str
     studyDate: str
@@ -25,6 +33,9 @@ class AnalysisResult(BaseModel):
     explanation: str
     heatmapUrl: str
     processingTimeMs: int
+    findings: list[FindingDetail] = []
+    breastComposition: str = ""
+    impression: str = ""
 
 class AnalysisResponse(AnalysisResult):
     pass

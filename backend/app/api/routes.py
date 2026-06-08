@@ -11,7 +11,8 @@ from app.services.dicom_processor import dicom_processor
 from app.services.inference import inference_service
 from app.services.heatmap_generator import heatmap_generator
 from app.utils.file_validator import validate_file
-from app.lib.birads import determine_birads, generate_explanation
+from app.lib.birads import determine_birads, generate_explanation, generate_findings
+from app.models.schemas import FindingDetail
 
 router = APIRouter()
 
@@ -86,10 +87,11 @@ async def analyze_file(request: AnalyzeRequest) -> AnalysisResponse:
         result = inference_service.predict(study_data["bytes"])
         processing_time = time.time() - start_time
         
-        # Generate heatmap
+        # Generate heatmap with model for Grad-CAM
         heatmap_url = heatmap_generator.create_overlay(
             study_data["bytes"],
-            result["probability"]
+            result["probability"],
+            model=inference_service.model
         )
         
         # Determine BI-RADS
@@ -97,6 +99,10 @@ async def analyze_file(request: AnalyzeRequest) -> AnalysisResponse:
         
         # Generate explanation
         explanation = generate_explanation(bi_rads, result["probability"])
+        
+        # Generate structured findings
+        breast_density = study_data["metadata"].get("breastDensity", "C")
+        findings_data = generate_findings(result["probability"], breast_density)
         
         # Clean up cache
         del _file_cache[request.file_id]
@@ -110,7 +116,10 @@ async def analyze_file(request: AnalyzeRequest) -> AnalysisResponse:
             confidence=result.get("confidence", 0.87),
             explanation=explanation,
             heatmapUrl=heatmap_url,
-            processingTimeMs=int(processing_time * 1000)
+            processingTimeMs=int(processing_time * 1000),
+            findings=[FindingDetail(**f) for f in findings_data["findings"]],
+            breastComposition=findings_data["breastComposition"],
+            impression=findings_data["impression"],
         )
     
     except HTTPException:
@@ -131,6 +140,11 @@ async def get_demo() -> DemoResponse:
         
         import base64
         
+        demo_prob = 0.67
+        demo_birads = determine_birads(demo_prob)
+        demo_explanation = generate_explanation(demo_birads, demo_prob)
+        demo_findings = generate_findings(demo_prob, "C")
+
         return DemoResponse(
             fileId="demo_sample_001",
             previewUrl=f"data:image/png;base64,{base64.b64encode(demo_image).decode()}",
@@ -142,15 +156,18 @@ async def get_demo() -> DemoResponse:
                 breastDensity="C"
             ),
             analysis=AnalysisResult(
-                probability=0.67,
+                probability=demo_prob,
                 probabilityPercent="67.00%",
                 biRads="BI-RADS 3",
-                biRadsDescription="Probably benign",
-                biRadsRecommendation="Short-term follow-up mammography (6 months)",
+                biRadsDescription=demo_birads["description"],
+                biRadsRecommendation=demo_birads["recommendation"],
                 confidence=0.91,
-                explanation="Findings suggest benign lesion with low malignancy risk. Routine surveillance recommended.",
+                explanation=demo_explanation,
                 heatmapUrl=f"data:image/png;base64,{base64.b64encode(demo_heatmap).decode()}",
-                processingTimeMs=234
+                processingTimeMs=234,
+                findings=[FindingDetail(**f) for f in demo_findings["findings"]],
+                breastComposition=demo_findings["breastComposition"],
+                impression=demo_findings["impression"],
             )
         )
     except Exception as e:
