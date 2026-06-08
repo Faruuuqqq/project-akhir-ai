@@ -9,11 +9,11 @@ class FindingDetail(BaseModel):
     biRadsAssessment: str
 
 class PatientMetadata(BaseModel):
-    patientId: str
-    studyDate: str
-    viewType: str
-    age: int
-    breastDensity: str
+    patientId: str | None = None
+    studyDate: str | None = None
+    viewType: str | None = None
+    age: int | None = None
+    breastDensity: str | None = None
 
 class UploadResponse(BaseModel):
     fileId: str

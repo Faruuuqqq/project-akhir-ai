@@ -61,7 +61,13 @@ async def upload_file(file: UploadFile = File(...)) -> UploadResponse:
         return UploadResponse(
             fileId=file_id,
             previewUrl=preview_url,
-            metadata=PatientMetadata(**metadata)
+            metadata=PatientMetadata(
+                patientId=metadata.get("patientId"),
+                studyDate=metadata.get("studyDate"),
+                viewType=metadata.get("viewType"),
+                age=metadata.get("age"),
+                breastDensity=metadata.get("breastDensity"),
+            )
         )
     
     except ValueError as e:

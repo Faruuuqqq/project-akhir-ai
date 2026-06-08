@@ -190,11 +190,15 @@ def generate_explanation(bi_rads: dict, probability: float) -> str:
     return explanations.get(bi_rads["category"], "Gagal memproses analisis penjelasan.")
 
 
-def generate_findings(probability: float, breast_density: str) -> dict:
+def generate_findings(probability: float, breast_density: str | None = None) -> dict:
     findings = _generate_findings(probability)
-    composition_index = {"A": 0, "B": 1, "C": 2, "D": 3}.get(breast_density, 2)
+    if breast_density and breast_density in ("A", "B", "C", "D"):
+        composition_index = {"A": 0, "B": 1, "C": 2, "D": 3}[breast_density]
+        composition = BREAST_COMPOSITIONS[composition_index]
+    else:
+        composition = "Tidak tersedia"
     return {
         "findings": findings,
-        "breastComposition": BREAST_COMPOSITIONS[composition_index],
+        "breastComposition": composition,
         "impression": _generate_impression(probability),
     }

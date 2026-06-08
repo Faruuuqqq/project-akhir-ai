@@ -25,19 +25,26 @@ class DICOMProcessor:
         try:
             ds = pydicom.dcmread(io.BytesIO(file_bytes))
             
-            patient_id = DICOMProcessor._get_tag(ds, (0x0010, 0x0020), "UNKNOWN")
-            
-            study_date = DICOMProcessor._get_tag(ds, (0x0008, 0x0020), datetime.now().strftime("%Y%m%d"))
-            if len(study_date) == 8 and study_date.isdigit():
+            patient_id = DICOMProcessor._get_tag(ds, (0x0010, 0x0020))
+            if patient_id == "UNKNOWN":
+                patient_id = None
+
+            study_date = DICOMProcessor._get_tag(ds, (0x0008, 0x0020), default=None)
+            if study_date and len(study_date) == 8 and study_date.isdigit():
                 study_date = f"{study_date[:4]}-{study_date[4:6]}-{study_date[6:8]}"
-            
-            view_type = DICOMProcessor._get_tag(ds, (0x0018, 0x5101), "CC")
-            
-            age_str = DICOMProcessor._get_tag(ds, (0x0010, 0x1010), "0")
-            age = int(age_str.replace('Y', '').strip() or '0')
-            
-            breast_density = DICOMProcessor._get_tag(ds, (0x0062, 0x0003), "B")
-            
+
+            view_type = DICOMProcessor._get_tag(ds, (0x0018, 0x5101), default=None)
+
+            age = None
+            age_str = DICOMProcessor._get_tag(ds, (0x0010, 0x1010), default=None)
+            if age_str:
+                try:
+                    age = int(age_str.replace('Y', '').strip())
+                except (ValueError, TypeError):
+                    age = None
+
+            breast_density = DICOMProcessor._get_tag(ds, (0x0062, 0x0003), default=None)
+
             return {
                 "patientId": patient_id,
                 "studyDate": study_date,
