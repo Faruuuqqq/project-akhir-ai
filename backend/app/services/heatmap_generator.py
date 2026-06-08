@@ -6,20 +6,10 @@ import pydicom
 from scipy.ndimage import gaussian_filter
 import torch
 import torch.nn.functional as F
-from torchvision import transforms
 
 class HeatmapGenerator:
-    def __init__(self, model=None, device='cpu'):
-        """Initialize with model for Grad-CAM computation."""
-        self.model = model
+    def __init__(self, device='cpu'):
         self.device = device
-        self.input_size = 512
-        
-        self.transform = transforms.Compose([
-            transforms.Resize((self.input_size, self.input_size)),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=[0.5], std=[0.5])
-        ])
     
     def create_overlay(self, file_bytes: bytes, probability: float, model=None) -> str:
         """
@@ -55,55 +45,71 @@ class HeatmapGenerator:
     
     def _compute_gradcam(self, file_bytes: bytes, model) -> np.ndarray:
         """
-        Compute Grad-CAM heatmap using the model's last convolutional layer.
+        Compute Grad-CAM heatmap using forward/backward hooks on features[8].
         """
         try:
-            # Preprocess input
             ds = pydicom.dcmread(io.BytesIO(file_bytes))
             pixel_array = ds.pixel_array
-            
-            # Normalize
+
             if pixel_array.max() > pixel_array.min():
-                pixel_array = ((pixel_array - pixel_array.min()) / 
+                pixel_array = ((pixel_array - pixel_array.min()) /
                               (pixel_array.max() - pixel_array.min()) * 255).astype(np.uint8)
             else:
                 pixel_array = pixel_array.astype(np.uint8)
-            
-            img = Image.fromarray(pixel_array).convert('L')
-            input_tensor = self.transform(img).unsqueeze(0).to(self.device)
-            
-            # Forward pass with gradient tracking
+
+            # Use 3-channel RGB preprocessing (matches model expectation)
+            from app.services.inference import inference_service
+            img = Image.fromarray(pixel_array).convert('RGB')
+            input_tensor = inference_service.transform(img).unsqueeze(0).to(self.device)
+
+            # Target layer: features[8] (final 1x1 conv + BN, right before SiLU + pool)
+            target_layer = model.features[8]
+
+            activations = None
+            gradients = None
+
+            def forward_hook(module, inp, out):
+                nonlocal activations
+                activations = out
+
+            def backward_hook(module, grad_inp, grad_out):
+                nonlocal gradients
+                gradients = grad_out[0]
+
+            fwd_handle = target_layer.register_forward_hook(forward_hook)
+            bwd_handle = target_layer.register_full_backward_hook(backward_hook)
+
             model.eval()
-            input_tensor.requires_grad = True
-            
+            model.zero_grad()
+
             with torch.enable_grad():
-                # Get last conv layer (features)
-                features = model.features(input_tensor)
-                output = model.classifier(features.view(features.size(0), -1))
-                
-                # Compute gradients w.r.t. features
-                output.backward()
-                gradients = features.grad
-            
-            # Compute Grad-CAM
+                input_tensor.requires_grad = True
+                output = model(input_tensor)
+                prob = torch.sigmoid(output)
+                prob.backward()
+
+            fwd_handle.remove()
+            bwd_handle.remove()
+
+            if activations is None or gradients is None:
+                raise RuntimeError("Failed to capture Grad-CAM activations/gradients")
+
+            # Grad-CAM: weighted sum of activations by gradient importance
             weights = gradients.mean(dim=(2, 3), keepdim=True)
-            gradcam = (weights * features).sum(dim=1, keepdim=True)
-            gradcam = F.relu(gradcam)
-            
-            # Normalize and resize to original dimensions
-            gradcam = gradcam.squeeze().detach().cpu().numpy()
-            gradcam = (gradcam - gradcam.min()) / (gradcam.max() - gradcam.min() + 1e-6)
-            
-            # Resize to match original image dimensions
-            heatmap_resized = Image.fromarray((gradcam * 255).astype(np.uint8))
-            heatmap_resized = heatmap_resized.resize(
-                (ds.pixel_array.shape[1], ds.pixel_array.shape[0]),
-                Image.Resampling.BILINEAR
-            )
-            
+            cam = (weights * activations).sum(dim=1, keepdim=True)
+            cam = F.relu(cam)
+
+            cam = cam.squeeze().detach().cpu().numpy()
+            cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-6)
+
+            # Resize to original image dimensions
+            h, w = pixel_array.shape
+            heatmap_resized = Image.fromarray((cam * 255).astype(np.uint8))
+            heatmap_resized = heatmap_resized.resize((w, h), Image.Resampling.BILINEAR)
+
             return np.array(heatmap_resized) / 255.0
         except Exception as e:
-            print(f"[WARN] Grad-CAM computation failed: {e}. Using synthetic.")
+            print(f"[WARN] Grad-CAM failed: {e}. Using synthetic.")
             return self._generate_synthetic_heatmap((512, 512), 0.5)
     
     @staticmethod

@@ -7,31 +7,43 @@ from datetime import datetime
 
 class DICOMProcessor:
     @staticmethod
+    def _get_tag(ds, tag, default="UNKNOWN"):
+        """Extract clean value from DICOM tag."""
+        elem = ds.get(tag)
+        if elem is None:
+            return default
+        val = elem.value
+        if isinstance(val, pydicom.valuerep.PersonName):
+            return str(val)
+        if isinstance(val, bytes):
+            return val.decode('utf-8', errors='replace')
+        return str(val)
+
+    @staticmethod
     def parse_dicom(file_bytes: bytes) -> dict:
         """Parse DICOM file and extract metadata."""
         try:
             ds = pydicom.dcmread(io.BytesIO(file_bytes))
             
-            patient_id = str(ds.get((0x0010, 0x0020), "UNKNOWN"))
-            study_date = str(ds.get((0x0008, 0x0020), datetime.now().strftime("%Y%m%d")))
-            # Format: YYYYMMDD -> YYYY-MM-DD
-            if len(study_date) == 8:
+            patient_id = DICOMProcessor._get_tag(ds, (0x0010, 0x0020), "UNKNOWN")
+            
+            study_date = DICOMProcessor._get_tag(ds, (0x0008, 0x0020), datetime.now().strftime("%Y%m%d"))
+            if len(study_date) == 8 and study_date.isdigit():
                 study_date = f"{study_date[:4]}-{study_date[4:6]}-{study_date[6:8]}"
             
-            view_type = str(ds.get((0x0018, 0x5101), "CC"))
+            view_type = DICOMProcessor._get_tag(ds, (0x0018, 0x5101), "CC")
             
-            # Age from string like "055Y" -> 55
-            age_str = str(ds.get((0x0010, 0x1010), "0"))
+            age_str = DICOMProcessor._get_tag(ds, (0x0010, 0x1010), "0")
             age = int(age_str.replace('Y', '').strip() or '0')
             
-            breast_density = str(ds.get((0x0062, 0x0003), "B"))
+            breast_density = DICOMProcessor._get_tag(ds, (0x0062, 0x0003), "B")
             
             return {
-                "patientId": patient_id.value if hasattr(patient_id, 'value') else patient_id,
+                "patientId": patient_id,
                 "studyDate": study_date,
-                "viewType": view_type.value if hasattr(view_type, 'value') else view_type,
+                "viewType": view_type,
                 "age": age,
-                "breastDensity": breast_density.value if hasattr(breast_density, 'value') else breast_density
+                "breastDensity": breast_density,
             }
         except Exception as e:
             raise ValueError(f"Failed to parse DICOM: {str(e)}")
