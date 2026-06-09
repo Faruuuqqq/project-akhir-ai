@@ -107,22 +107,27 @@ export function UploadZone({ onDemoClick }: UploadZoneProps) {
   return (
     <div className="w-full font-inter">
       {/* Informed Consent Card */}
-      <div className="bg-white p-8 rounded-2xl shadow-medical border border-light-silver/50 mb-6">
-        <div className="flex items-center gap-2 mb-4 text-trust-teal">
-          <span className="material-symbols-outlined">fact_check</span>
-          <h2 className="font-jakarta text-sm font-bold uppercase tracking-[0.1em]">Persetujuan Pasien</h2>
+      <div className="bg-gradient-to-br from-ribbon-pink/[0.02] to-ribbon-pink/[0.05] p-8 rounded-2xl shadow-sm border border-ribbon-pink/20 mb-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+          <span className="material-symbols-outlined text-[100px]">gavel</span>
         </div>
-        <p className="text-xs leading-relaxed text-slate mb-6">
+        <div className="flex items-center gap-2 mb-4 text-ribbon-pink relative z-10">
+          <span className="material-symbols-outlined">fact_check</span>
+          <h2 className="font-jakarta text-sm font-bold uppercase tracking-[0.1em]">Persetujuan Klinis</h2>
+        </div>
+        <p className="text-xs leading-relaxed text-slate mb-6 relative z-10">
           Saya mengonfirmasi bahwa data pasien telah dianonimkan sesuai dengan protokol HIPAA/GDPR dan pasien telah memberikan persetujuan untuk analisis berbasis kecerdasan buatan.
         </p>
-        <label className="flex items-start gap-3 cursor-pointer group">
-          <input
-            className="mt-0.5 w-4 h-4 rounded border-light-silver text-trust-teal focus:ring-trust-teal cursor-pointer"
-            type="checkbox"
-            checked={consentGiven}
-            onChange={(e) => setConsent(e.target.checked)}
-          />
-          <span className="text-sm font-medium text-charcoal select-none group-hover:text-trust-teal transition-colors">Saya menyetujui seluruh syarat & ketentuan medis.</span>
+        <label className="flex items-start gap-3 cursor-pointer group relative z-10">
+          <div className="relative flex items-center justify-center mt-0.5">
+            <input
+              className="peer w-5 h-5 rounded border-2 border-light-silver text-ribbon-pink focus:ring-ribbon-pink/30 focus:ring-offset-0 cursor-pointer transition-all hover:border-ribbon-pink"
+              type="checkbox"
+              checked={consentGiven}
+              onChange={(e) => setConsent(e.target.checked)}
+            />
+          </div>
+          <span className="text-sm font-medium text-charcoal select-none group-hover:text-ribbon-pink transition-colors">Saya menyetujui seluruh syarat & ketentuan medis.</span>
         </label>
       </div>
 
@@ -135,10 +140,10 @@ export function UploadZone({ onDemoClick }: UploadZoneProps) {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-          className={`rounded-2xl border-2 border-dashed p-16 transition-colors duration-300 flex flex-col items-center justify-center text-center ${
+          className={`rounded-2xl border-2 border-dashed p-16 transition-colors duration-300 flex flex-col items-center justify-center text-center touch-manipulation ${
             dragActive
-              ? 'border-trust-teal bg-trust-teal/5 shadow-teal-glow'
-              : 'border-light-silver bg-white hover:border-trust-teal/50 hover:bg-clinical-pearl'
+              ? 'border-ribbon-pink bg-ribbon-pink/5 shadow-pink-glow'
+              : 'border-light-silver bg-white hover:border-ribbon-pink/50 hover:bg-clinical-pearl'
           } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
         onClick={handleBrowseClick}
       >
@@ -152,9 +157,13 @@ export function UploadZone({ onDemoClick }: UploadZoneProps) {
         />
         
         {/* SVG Icon */}
-        <div className={`mb-6 transition-colors ${dragActive ? 'text-trust-teal' : 'text-slate'}`}>
-          <span className="material-symbols-outlined text-[48px]">cloud_upload</span>
-        </div>
+        <motion.div 
+          animate={{ y: [0, -8, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className={`mb-6 transition-colors ${dragActive ? 'text-ribbon-pink drop-shadow-md' : 'text-slate/80'}`}
+        >
+          <span className="material-symbols-outlined text-[64px]">cloud_upload</span>
+        </motion.div>
 
         <h3 className="mb-2 font-jakarta text-xl font-bold text-charcoal">
           {dragActive ? 'Lepaskan gambar untuk analisis' : 'Unggah Berkas Mamografi'}
@@ -164,7 +173,7 @@ export function UploadZone({ onDemoClick }: UploadZoneProps) {
         </p>
 
         <button
-          className="rounded-lg bg-trust-teal px-8 py-3 font-semibold text-white shadow-teal-glow transition-all hover:bg-teal-dark hover:shadow-teal-glow-hover hover:-translate-y-[1px] tracking-wide"
+          className="rounded-lg bg-ribbon-pink px-8 py-3 font-semibold text-white shadow-pink-glow transition-all hover:bg-ribbon-dark hover:shadow-pink-glow-hover hover:-translate-y-[1px] tracking-wide"
           disabled={loading}
           onClick={(e) => {
             e.stopPropagation();
@@ -188,8 +197,12 @@ export function UploadZone({ onDemoClick }: UploadZoneProps) {
       )}
 
       {/* Demo Option */}
-      <div className="mt-10 text-center">
-        <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate">Tidak ada berkas?</p>
+      <div className="mt-10 text-center flex flex-col items-center">
+        <div className="flex items-center gap-4 mb-5 w-full max-w-xs mx-auto">
+          <div className="h-px flex-1 bg-light-silver"></div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate">Atau</p>
+          <div className="h-px flex-1 bg-light-silver"></div>
+        </div>
         <button
           onClick={() => {
             if (!consentGiven) {
@@ -199,8 +212,9 @@ export function UploadZone({ onDemoClick }: UploadZoneProps) {
             onDemoClick();
           }}
           disabled={loading}
-          className="rounded-lg border border-light-silver bg-white px-8 py-3 font-semibold text-charcoal transition-all hover:bg-clinical-pearl disabled:opacity-50 hover:shadow-sm"
+          className="group inline-flex items-center gap-2 rounded-xl border border-light-silver bg-white px-8 py-3.5 font-semibold text-charcoal transition-all hover:border-ribbon-pink/30 hover:bg-ribbon-pink/5 hover:text-ribbon-pink hover:shadow-pink-glow disabled:opacity-50 disabled:cursor-not-allowed"
         >
+          <span className="material-symbols-outlined text-ribbon-pink group-hover:rotate-12 transition-transform">science</span>
           Coba Data Demo Klinis
         </button>
       </div>

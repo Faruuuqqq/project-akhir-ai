@@ -78,7 +78,7 @@ export default function ScreeningPage() {
               <div className="flex items-center gap-3">
                 <div className={`flex h-8 w-8 items-center justify-center rounded-full font-jakarta text-xs font-bold transition-all duration-300 ${
                   i <= currentStep
-                    ? 'bg-trust-teal text-white shadow-teal-glow'
+                    ? 'bg-ribbon-pink text-white shadow-pink-glow'
                     : 'bg-light-silver text-slate'
                 }`}>
                   {i < currentStep ? (
@@ -95,11 +95,11 @@ export default function ScreeningPage() {
               </div>
               {i < STEPS.length - 1 && (
                 <div className={`mx-4 flex-1 h-px transition-all duration-500 relative ${
-                  i < currentStep ? 'bg-trust-teal' : 'bg-light-silver'
+                  i < currentStep ? 'bg-ribbon-pink' : 'bg-light-silver'
                 }`}>
                   {i === currentStep - 1 && (
                     <motion.div 
-                      className="absolute inset-0 bg-trust-teal shadow-[0_0_10px_2px_rgba(15,118,110,0.6)]"
+                      className="absolute inset-0 bg-ribbon-pink shadow-[0_0_10px_2px_rgba(15,118,110,0.6)]"
                       initial={{ opacity: 0.3 }}
                       animate={{ opacity: [0.3, 1, 0.3] }}
                       transition={{ duration: 2, ease: "easeInOut", repeat: Infinity }}
@@ -139,7 +139,7 @@ export default function ScreeningPage() {
           </motion.div>
         ) : (
           /* Steps 1-2: Viewer + Results */
-          <div className="mb-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
+          <div className="mb-12 grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-2">
             {/* Left Column: DICOM Viewer */}
             <div className="space-y-6">
               <div className="relative h-96 overflow-hidden rounded-lg bg-mri-black">
@@ -161,7 +161,7 @@ export default function ScreeningPage() {
                 <button
                   onClick={handleAnalyze}
                   disabled={loading || !isImageLoaded || isAnalyzed}
-                  className="flex-1 rounded-lg bg-trust-teal px-4 py-3 font-semibold tracking-wide text-white transition-all hover:bg-teal-dark hover:shadow-teal-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:bg-slate/50 disabled:text-white/70 flex items-center justify-center gap-2"
+                  className="flex-1 rounded-lg bg-ribbon-pink px-4 py-3 font-semibold tracking-wide text-white transition-all hover:bg-ribbon-dark hover:shadow-pink-glow disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:bg-slate/50 disabled:text-white/70 flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <><span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" /> Menganalisis...</>
@@ -191,18 +191,18 @@ export default function ScreeningPage() {
                 <ResultsCard analysis={analysisResult} />
               ) : (
                 /* Pre-analysis: Show upload info */
-                <div className="rounded-2xl border border-trust-teal/20 bg-gradient-to-b from-white to-clinical-pearl p-10 shadow-medical relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
+                <div className="rounded-2xl border border-ribbon-pink/20 bg-gradient-to-b from-white to-clinical-pearl p-10 shadow-medical relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
                   {/* Radar/Pulse Background */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
                     <motion.div 
                       animate={{ scale: [1, 2, 3], opacity: [0.5, 0, 0] }}
                       transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }}
-                      className="absolute w-32 h-32 rounded-full border-2 border-trust-teal"
+                      className="absolute w-32 h-32 rounded-full border-2 border-ribbon-pink"
                     />
                     <motion.div 
                       animate={{ scale: [1, 2, 3], opacity: [0.5, 0, 0] }}
                       transition={{ duration: 3, repeat: Infinity, ease: "easeOut", delay: 1 }}
-                      className="absolute w-32 h-32 rounded-full border-2 border-trust-teal"
+                      className="absolute w-32 h-32 rounded-full border-2 border-ribbon-pink"
                     />
                   </div>
 
@@ -211,13 +211,13 @@ export default function ScreeningPage() {
                     animate={{ scale: 1, opacity: 1 }}
                     className="relative z-10 flex flex-col items-center text-center"
                   >
-                    <div className="w-20 h-20 rounded-2xl bg-white shadow-teal-glow flex items-center justify-center mb-6 relative">
-                      <div className="absolute inset-0 rounded-2xl border border-trust-teal/30"></div>
-                      <span className="material-symbols-outlined text-4xl text-trust-teal">memory</span>
+                    <div className="w-20 h-20 rounded-2xl bg-white shadow-pink-glow flex items-center justify-center mb-6 relative">
+                      <div className="absolute inset-0 rounded-2xl border border-ribbon-pink/30"></div>
+                      <span className="material-symbols-outlined text-4xl text-ribbon-pink">memory</span>
                       <motion.div 
                         animate={{ opacity: [0, 1, 0] }}
                         transition={{ duration: 2, repeat: Infinity }}
-                        className="absolute top-2 right-2 w-2 h-2 rounded-full bg-trust-teal"
+                        className="absolute top-2 right-2 w-2 h-2 rounded-full bg-ribbon-pink"
                       />
                     </div>
                     
@@ -225,8 +225,8 @@ export default function ScreeningPage() {
                     <p className="text-sm text-slate leading-relaxed max-w-sm">
                       Citra berhasil dimuat dengan aman ke memori volatil. Sistem siap menjalankan algoritma deteksi jaringan saraf.
                     </p>
-                    <div className="mt-8 flex items-center gap-2 text-xs font-semibold text-trust-teal uppercase tracking-widest bg-trust-teal/5 px-4 py-2 rounded-full border border-trust-teal/10">
-                      <span className="w-2 h-2 rounded-full bg-trust-teal animate-pulse"></span>
+                    <div className="mt-8 flex items-center gap-2 text-xs font-semibold text-ribbon-pink uppercase tracking-widest bg-ribbon-pink/5 px-4 py-2 rounded-full border border-ribbon-pink/10">
+                      <span className="w-2 h-2 rounded-full bg-ribbon-pink animate-pulse"></span>
                       Menunggu Instruksi
                     </div>
                   </motion.div>

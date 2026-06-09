@@ -60,13 +60,13 @@ export default function ContactPage() {
     <div className="bg-clinical-pearl font-inter text-charcoal">
       <main className="mx-auto max-w-5xl px-6 pt-32 pb-32">
         <nav className="flex items-center gap-2 mb-8 text-xs font-mono text-slate" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-trust-teal transition-colors">Beranda</Link>
+          <Link href="/" className="hover:text-ribbon-pink transition-colors">Beranda</Link>
           <span className="text-light-silver">/</span>
-          <span className="text-trust-teal font-bold">Kontak</span>
+          <span className="text-ribbon-pink font-bold">Kontak</span>
         </nav>
 
         <section className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-trust-teal/5 rounded-full border border-trust-teal/10 text-trust-teal text-xs font-bold uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-ribbon-pink/5 rounded-full border border-ribbon-pink/10 text-ribbon-pink text-xs font-bold uppercase tracking-widest mb-6">
             <span className="material-symbols-outlined text-sm">forum</span>
             Hubungi Kami
           </div>
@@ -89,9 +89,9 @@ export default function ContactPage() {
                   <a
                     key={ch.label}
                     href={ch.href}
-                    className="flex items-center gap-4 p-4 rounded-xl bg-clinical-pearl border border-light-silver hover:border-trust-teal/30 transition-all group"
+                    className="flex items-center gap-4 p-4 rounded-xl bg-clinical-pearl border border-light-silver hover:border-ribbon-pink/30 transition-all group"
                   >
-                    <div className="w-10 h-10 rounded-lg bg-trust-teal/5 flex items-center justify-center text-trust-teal group-hover:bg-trust-teal/10 transition-colors">
+                    <div className="w-10 h-10 rounded-lg bg-ribbon-pink/5 flex items-center justify-center text-ribbon-pink group-hover:bg-ribbon-pink/10 transition-colors">
                       <span className="material-symbols-outlined">{ch.icon}</span>
                     </div>
                     <div>
@@ -116,8 +116,8 @@ export default function ContactPage() {
           <div className="md:col-span-3">
             {submitted ? (
               <div className="bg-white p-10 rounded-2xl border border-light-silver shadow-medical text-center">
-                <div className="w-16 h-16 rounded-2xl bg-trust-teal/5 flex items-center justify-center mx-auto mb-6">
-                  <span className="material-symbols-outlined text-3xl text-trust-teal">check_circle</span>
+                <div className="w-16 h-16 rounded-2xl bg-ribbon-pink/5 flex items-center justify-center mx-auto mb-6">
+                  <span className="material-symbols-outlined text-3xl text-ribbon-pink">check_circle</span>
                 </div>
                 <h2 className="font-jakarta text-2xl font-bold text-charcoal mb-3">Pesan Terkirim!</h2>
                 <p className="text-sm text-slate mb-6 max-w-sm mx-auto">
@@ -125,7 +125,7 @@ export default function ContactPage() {
                 </p>
                 <button
                   onClick={() => { setSubmitted(false); setForm({ name: '', email: '', category: '', message: '' }); }}
-                  className="inline-flex items-center gap-2 bg-trust-teal text-white px-6 py-3 rounded-xl font-jakarta font-bold text-sm hover:bg-teal-dark transition-all"
+                  className="inline-flex items-center gap-2 bg-ribbon-pink text-white px-6 py-3 rounded-xl font-jakarta font-bold text-sm hover:bg-ribbon-dark transition-all"
                 >
                   Kirim Pesan Baru
                 </button>
@@ -142,7 +142,7 @@ export default function ContactPage() {
                     type="text"
                     value={form.name}
                     onChange={(e) => handleChange('name', e.target.value)}
-                    className={`w-full px-4 py-3 rounded-xl border bg-clinical-pearl text-charcoal text-sm transition-all focus:outline-none focus:ring-2 focus:ring-trust-teal/30 ${
+                    className={`w-full px-4 py-3 rounded-xl border bg-clinical-pearl text-charcoal text-sm transition-all focus:outline-none focus:ring-2 focus:ring-ribbon-pink/30 ${
                       errors.name ? 'border-muted-rose' : 'border-light-silver'
                     }`}
                     placeholder="dr. Andi Pratama"
@@ -160,7 +160,7 @@ export default function ContactPage() {
                     type="email"
                     value={form.email}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    className={`w-full px-4 py-3 rounded-xl border bg-clinical-pearl text-charcoal text-sm transition-all focus:outline-none focus:ring-2 focus:ring-trust-teal/30 ${
+                    className={`w-full px-4 py-3 rounded-xl border bg-clinical-pearl text-charcoal text-sm transition-all focus:outline-none focus:ring-2 focus:ring-ribbon-pink/30 ${
                       errors.email ? 'border-muted-rose' : 'border-light-silver'
                     }`}
                     placeholder="andi@rumahsakit.id"
@@ -177,7 +177,7 @@ export default function ContactPage() {
                     id="category"
                     value={form.category}
                     onChange={(e) => handleChange('category', e.target.value)}
-                    className={`w-full px-4 py-3 rounded-xl border bg-clinical-pearl text-charcoal text-sm transition-all focus:outline-none focus:ring-2 focus:ring-trust-teal/30 ${
+                    className={`w-full px-4 py-3 rounded-xl border bg-clinical-pearl text-charcoal text-sm transition-all focus:outline-none focus:ring-2 focus:ring-ribbon-pink/30 ${
                       errors.category ? 'border-muted-rose' : 'border-light-silver'
                     }`}
                   >
@@ -194,10 +194,10 @@ export default function ContactPage() {
                   </label>
                   <textarea
                     id="message"
-                    rows={5}
+                    rows={4}
                     value={form.message}
                     onChange={(e) => handleChange('message', e.target.value)}
-                    className={`w-full px-4 py-3 rounded-xl border bg-clinical-pearl text-charcoal text-sm transition-all focus:outline-none focus:ring-2 focus:ring-trust-teal/30 resize-y ${
+                    className={`w-full px-4 py-3 rounded-xl border bg-clinical-pearl text-charcoal text-sm transition-all focus:outline-none focus:ring-2 focus:ring-ribbon-pink/30 resize-y min-h-[100px] md:min-h-[120px] ${
                       errors.message ? 'border-muted-rose' : 'border-light-silver'
                     }`}
                     placeholder="Jelaskan pertanyaan atau kebutuhan Anda secara singkat..."
@@ -208,7 +208,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   disabled={sending}
-                  className="w-full bg-trust-teal text-white py-3.5 rounded-xl font-jakarta font-bold text-sm hover:bg-teal-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="w-full bg-ribbon-pink text-white py-3.5 rounded-xl font-jakarta font-bold text-sm hover:bg-ribbon-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {sending ? (
                     <><span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin" /> Mengirim...</>
