@@ -6,9 +6,9 @@
 
 'use client';
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 import * as api from '@/lib/api';
-import { ScreeningState, UploadResponse, AnalysisResult, DemoResponse, PatientMetadata } from '@/lib/types';
+import { ScreeningState, UploadResponse, AnalysisResult, DemoResponse, PatientMetadata, HistoryRecord } from '@/lib/types';
 
 /**
  * Screening context type definition
@@ -33,6 +33,12 @@ export interface ScreeningContextType {
   resetWorkflow: () => void;
   setConsent: (given: boolean) => void;
   clearError: () => void;
+  
+  // History methods
+  saveToHistory: () => void;
+  getHistory: () => HistoryRecord[];
+  deleteFromHistory: (id: string) => void;
+  clearHistory: () => void;
 }
 
 /**
@@ -59,6 +65,19 @@ export function ScreeningProvider({ children }: ScreeningProviderProps) {
     error: null,
     consentGiven: false,
   });
+  const [history, setHistory] = useState<HistoryRecord[]>([]);
+
+  // Load history from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('mammoai_history');
+      if (stored) {
+        setHistory(JSON.parse(stored));
+      }
+    } catch (error) {
+      console.error('Failed to load history from localStorage:', error);
+    }
+  }, []);
 
   /**
    * Upload a file to the backend
@@ -171,6 +190,65 @@ export function ScreeningProvider({ children }: ScreeningProviderProps) {
     }));
   }, []);
 
+  /**
+   * Save current analysis result to history
+   */
+  const saveToHistory = useCallback(() => {
+    if (!state.analysisResult || !state.currentStudy) return;
+
+    const newRecord: HistoryRecord = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: Date.now(),
+      date: new Date().toLocaleString('id-ID'),
+      patientId: state.currentStudy.metadata?.patientId,
+      biRads: state.analysisResult.biRads,
+      probabilityPercent: state.analysisResult.probabilityPercent,
+      isHighRisk: state.analysisResult.probability > 0.5,
+      findingsCount: state.analysisResult.findings?.length || 0,
+      previewUrl: state.currentStudy.previewUrl,
+    };
+
+    const updated = [newRecord, ...history];
+    setHistory(updated);
+    try {
+      localStorage.setItem('mammoai_history', JSON.stringify(updated));
+    } catch (error) {
+      console.error('Failed to save history to localStorage:', error);
+    }
+  }, [state.analysisResult, state.currentStudy, history]);
+
+  /**
+   * Get all history records
+   */
+  const getHistory = useCallback(() => {
+    return history;
+  }, [history]);
+
+  /**
+   * Delete a history record by ID
+   */
+  const deleteFromHistory = useCallback((id: string) => {
+    const updated = history.filter((record) => record.id !== id);
+    setHistory(updated);
+    try {
+      localStorage.setItem('mammoai_history', JSON.stringify(updated));
+    } catch (error) {
+      console.error('Failed to update history in localStorage:', error);
+    }
+  }, [history]);
+
+  /**
+   * Clear all history records
+   */
+  const clearHistory = useCallback(() => {
+    setHistory([]);
+    try {
+      localStorage.removeItem('mammoai_history');
+    } catch (error) {
+      console.error('Failed to clear history from localStorage:', error);
+    }
+  }, []);
+
   const value: ScreeningContextType = {
     currentStudy: state.currentStudy,
     analysisResult: state.analysisResult,
@@ -183,6 +261,10 @@ export function ScreeningProvider({ children }: ScreeningProviderProps) {
     resetWorkflow,
     setConsent,
     clearError,
+    saveToHistory,
+    getHistory,
+    deleteFromHistory,
+    clearHistory,
   };
 
   return (

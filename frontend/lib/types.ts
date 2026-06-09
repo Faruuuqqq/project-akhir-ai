@@ -80,3 +80,18 @@ export interface ScreeningState {
   error: string | null;
   consentGiven: boolean;
 }
+
+/**
+ * Record for locally saved analysis history
+ */
+export interface HistoryRecord {
+  id: string;
+  timestamp: number;
+  date: string;
+  patientId?: string;
+  biRads: string;
+  probabilityPercent: string;
+  isHighRisk: boolean;
+  findingsCount: number;
+  previewUrl: string | null;
+}

@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AnalysisResult, FindingDetail } from '@/lib/types';
 import { COLORS } from '@/lib/constants';
+import { useScreening } from '@/contexts/ScreeningContext';
 
 interface ResultsCardProps {
   analysis: AnalysisResult;
@@ -47,6 +48,15 @@ function FindingRow({ finding }: { finding: FindingDetail }) {
 }
 
 export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
+  const { saveToHistory } = useScreening();
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = () => {
+    saveToHistory();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  };
+
   const isProbHigh = analysis.probability > 0.5;
   const scoreColor = isProbHigh ? COLORS.semanticAlert : COLORS.semanticNormal;
   const labelRisk = isProbHigh ? 'TINGGI' : 'RENDAH';
@@ -61,20 +71,35 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
       className="space-y-6 font-inter"
     >
       {/* REPORT HEADER */}
-      <motion.div variants={fadeUp} className="rounded-2xl border border-light-silver bg-white p-6 shadow-medical">
-        <div className="flex items-center gap-2 mb-1 text-trust-teal">
-          <span className="material-symbols-outlined text-base">description</span>
-          <span className="font-jakarta text-xs font-bold uppercase tracking-[0.1em] text-slate">Laporan Hasil Skrining</span>
+      <motion.div variants={fadeUp} className="rounded-2xl border border-light-silver bg-white p-6 shadow-medical flex justify-between items-start">
+        <div>
+          <div className="flex items-center gap-2 mb-1 text-trust-teal">
+            <span className="material-symbols-outlined text-base">description</span>
+            <span className="font-jakarta text-xs font-bold uppercase tracking-[0.1em] text-slate">Laporan Hasil Skrining</span>
+          </div>
+          <h2 className="font-jakarta text-lg font-bold text-charcoal">Ringkasan Diagnostik AI</h2>
+          {analysis.impression && (
+            <p className="mt-2 text-sm leading-relaxed text-charcoal">{analysis.impression}</p>
+          )}
+          {analysis.breastComposition && (
+            <p className="mt-2 text-xs text-slate">
+              <span className="font-semibold">Komposisi Payudara:</span> {analysis.breastComposition}
+            </p>
+          )}
         </div>
-        <h2 className="font-jakarta text-lg font-bold text-charcoal">Ringkasan Diagnostik AI</h2>
-        {analysis.impression && (
-          <p className="mt-2 text-sm leading-relaxed text-charcoal">{analysis.impression}</p>
-        )}
-        {analysis.breastComposition && (
-          <p className="mt-2 text-xs text-slate">
-            <span className="font-semibold">Komposisi Payudara:</span> {analysis.breastComposition}
-          </p>
-        )}
+        
+        <button
+          onClick={handleSave}
+          disabled={saved}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+            saved 
+              ? 'bg-trust-teal/10 text-trust-teal border border-trust-teal/20'
+              : 'bg-white text-charcoal border border-light-silver hover:bg-clinical-pearl hover:border-trust-teal/30 hover:text-trust-teal'
+          }`}
+        >
+          <span className="material-symbols-outlined text-[16px]">{saved ? 'check_circle' : 'bookmark_add'}</span>
+          <span className="hidden sm:inline">{saved ? 'Tersimpan di Riwayat' : 'Simpan ke Riwayat Lokal'}</span>
+        </button>
       </motion.div>
 
       {/* AI PROBABILITY SCORE */}
@@ -83,15 +108,16 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
           Probabilitas Indikasi Malignansi
         </p>
 
-        <div className="flex items-baseline gap-3 mb-8">
+        <div className="flex items-baseline gap-3 mb-8 relative">
+          <div className="absolute -inset-4 bg-gradient-to-r from-transparent via-current to-transparent opacity-[0.03] blur-xl" style={{ color: scoreColor }} />
           <div
-            className="font-mono text-[5rem] font-medium tracking-tight leading-none"
-            style={{ color: scoreColor }}
+            className="font-mono text-[5rem] font-medium tracking-tight leading-none relative z-10"
+            style={{ color: scoreColor, textShadow: `0 4px 20px ${scoreColor}40` }}
           >
             {analysis.probabilityPercent}
           </div>
           <span
-            className="font-jakarta text-sm font-bold uppercase tracking-widest"
+            className="font-jakarta text-sm font-bold uppercase tracking-widest relative z-10"
             style={{ color: scoreColor }}
           >
             {labelRisk}
@@ -107,13 +133,13 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
           </div>
           <div className="h-2 w-full overflow-hidden rounded-full bg-light-silver/50 shadow-inner">
             <motion.div
-              className="h-full rounded-full relative"
-              style={{ backgroundColor: scoreColor }}
+              className="h-full rounded-full relative shadow-[0_0_12px_rgba(0,0,0,0.2)]"
+              style={{ backgroundColor: scoreColor, boxShadow: `0 0 10px ${scoreColor}80` }}
               initial={{ width: 0 }}
               animate={{ width: `${analysis.probability * 100}%` }}
               transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/30" />
+              <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/40" />
             </motion.div>
           </div>
         </div>
@@ -152,7 +178,13 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
         <div className="flex items-center gap-2 mb-1">
           <span className="font-jakarta text-xs font-bold uppercase tracking-[0.1em] text-slate">Kategori</span>
           {biRadsLevel >= 4 && (
-            <span className="rounded-full bg-muted-rose/10 px-2 py-0.5 font-jakarta text-[10px] font-bold text-muted-rose uppercase tracking-wider">Perhatian Klinis</span>
+            <motion.span 
+              animate={{ opacity: [1, 0.6, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="rounded-full bg-muted-rose/10 px-2 py-0.5 font-jakarta text-[10px] font-bold text-muted-rose uppercase tracking-wider border border-muted-rose/20"
+            >
+              Perhatian Klinis
+            </motion.span>
           )}
         </div>
         <h4 className="mb-2 font-jakarta text-xl font-bold text-charcoal">{analysis.biRads}</h4>

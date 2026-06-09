@@ -19,6 +19,7 @@ export function Footer() {
              <h4 className="font-jakarta text-xs uppercase tracking-widest font-bold mb-4 text-charcoal">Produk</h4>
              <ul className="space-y-3 text-sm text-slate">
                <li><Link href="/screening" className="hover:text-trust-teal transition-colors">Skrining AI</Link></li>
+               <li><Link href="/history" className="hover:text-trust-teal transition-colors">Riwayat Analisis</Link></li>
                <li><Link href="/how-it-works" className="hover:text-trust-teal transition-colors">Cara Kerja</Link></li>
                <li><Link href="/research" className="hover:text-trust-teal transition-colors">Metodologi</Link></li>
              </ul>

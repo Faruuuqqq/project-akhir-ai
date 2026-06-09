@@ -11,6 +11,7 @@ export function Navbar() {
   const navLinks = [
     { name: 'Beranda', href: '/' },
     { name: 'Skrining', href: '/screening' },
+    { name: 'Riwayat', href: '/history' },
     { name: 'Cara Kerja', href: '/how-it-works' },
     { name: 'FAQ', href: '/faq' },
   ];
