@@ -18,14 +18,14 @@ export const COLORS = {
   border: '#E2E8F0', // Light Silver
 
   // Accents
-  accentPrimary: '#0F766E', // Trust Teal
-  accentHover: '#0F5F59', // Teal Dark
-  accentDim: 'rgba(15,118,110,0.06)', // Accent at 6% opacity
+  accentPrimary: '#E64C7E', // Ribbon Pink
+  accentHover: '#C1124B', // Ribbon Dark
+  accentDim: 'rgba(230,76,126,0.06)', // Accent at 6% opacity
 
   // Semantics
   semanticNormal: '#3B82F6', // Calm Blue (for < 50% probability)
   semanticAlert: '#BE123C', // Muted Rose (for > 50% probability / cancer detected)
-  warning: '#D97706', // Warm Amber (for disclaimers)
+  warning: '#F9A029', // Ribbon Orange (for disclaimers)
 };
 
 /**
@@ -43,7 +43,7 @@ export const SCANNING_ANIMATION_DURATION = 2.5; // seconds
 /**
  * API configuration
  */
-export const API_TIMEOUT = 30000; // milliseconds (30 seconds)
+export const API_TIMEOUT = 120000; // milliseconds (120 seconds) - increased for slow CPU inference
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 /**

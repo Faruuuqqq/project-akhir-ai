@@ -21,6 +21,6 @@ h1, h2, h3, h4, h5, h6 {
 
 @layer base {
   *:focus-visible {
-    @apply outline-2 outline-offset-2 outline-trust-teal rounded-sm;
+    @apply outline-2 outline-offset-2 outline-ribbon-pink rounded-sm;
   }
 }
