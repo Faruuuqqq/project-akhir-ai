@@ -12,13 +12,16 @@ module.exports = {
           'charcoal': '#1F2937',
           'slate': '#64748B',
           // Theme colors mapped to Breast Cancer Ribbon colors
-          'trust-teal': '#E64C7E', // Ribbon Pink
-          'teal-dark': '#C1124B',  // Ribbon Dark Pink
+          'ribbon-pink': '#E64C7E',
+          'ribbon-dark': '#C1124B',
           'calm-blue': '#3B82F6',
           'muted-rose': '#BE123C',
-          'warning': '#F9A029',    // Ribbon Orange
-          'warm-amber': '#F9A029', // Ribbon Orange
+          'ribbon-orange': '#F9A029',
+          'warning': '#F9A029',
+          'warm-amber': '#F9A029',
           'light-silver': '#E2E8F0',
+          'trust-teal': '#E64C7E', // Keep for backward compatibility
+          'teal-dark': '#C1124B',  // Keep for backward compatibility
         },
       fontFamily: {
         'jakarta': ['var(--font-jakarta)', 'sans-serif'],
