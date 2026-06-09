@@ -1,148 +1,141 @@
-# RSNA Mammography AI — Deteksi Kanker Payudara Berbasis AI
+# RSNA Mammography AI - Breast Cancer Detection
 
-Aplikasi web untuk deteksi kanker payudara dari citra mammogram menggunakan deep learning. Dibangun dengan Next.js 14 (frontend) dan FastAPI + PyTorch (backend).
+An AI-powered web application for early breast cancer detection from mammogram images using deep learning. Built with Next.js 14 (Frontend) and FastAPI + PyTorch (Backend).
 
-## Fitur
+## Authors
+- **Dzikri Fakhry** (140810240056)
+- **Achmad Faruq Mahdison** (140810240080)
+- **Fardan Fadhilah Andicha Putra** (140810240084)
 
-- **Upload & Analisis Mammogram:** Unggah file DICOM atau PNG untuk analisis real-time
-- **AI Probability Scoring:** Probabilitas keganasan (0–100%) dengan confidence score
-- **Klasifikasi BI-RADS:** Skor BI-RADS 0–6 dengan deskripsi dan rekomendasi dalam Bahasa Indonesia
-- **Heatmap Visualisasi:** Grad-CAM heatmap untuk menunjukkan area yang dianalisis
-- **DICOM Viewer:** Viewer citra DICOM berbasis Canvas
-- **Mode Demo:** Contoh hasil analisis tanpa perlu upload file
+## Features
+
+- **Upload & Analysis:** Upload DICOM or PNG mammogram files for real-time analysis.
+- **AI Probability Scoring:** Malignancy probability (0-100%) with a calculated confidence score.
+- **BI-RADS Classification:** Maps AI predictions to BI-RADS categories (1-5) with detailed clinical recommendations in Indonesian.
+- **Explainable AI (Grad-CAM):** Automatically generates a heatmap overlay highlighting the exact tissue areas the AI focused on.
+- **DICOM Viewer:** Canvas-based medical imaging viewer.
+- **Local History:** Saves previous screening results securely in browser local storage (Zero-Data Retention policy).
+- **Clinical Demo Mode:** Test the pipeline immediately with a pre-configured sample image.
 
 ## Tech Stack
 
-| Layer | Teknologi |
+| Layer | Technologies |
 |-------|-----------|
-| Frontend | Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion |
-| Backend | Python 3.11+, FastAPI, PyTorch |
-| Model | EfficientNet-B4 (18.59M params) |
-| Image Processing | pydicom, Pillow, torchvision |
-| Deployment | Vercel (frontend), Railway (backend) |
+| **Frontend** | Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion |
+| **Backend** | Python 3.11+, FastAPI, PyTorch |
+| **Model** | EfficientNet-B4 (18.59M parameters) |
+| **Processing** | pydicom, Pillow, SciPy, torchvision |
+| **Deployment** | Vercel (Frontend), Railway (Backend) |
 
-## Model AI
+## AI Architecture
 
-Model menggunakan arsitektur **EfficientNet-B4** yang dimodifikasi:
+The underlying model is a customized **EfficientNet-B4**:
 
-- Input: 512×512 RGB (grayscale DICOM dikonversi ke 3 channel)
-- 9 MBConv blocks dengan Squeeze-and-Excitation (SE)
-- Custom head: `Linear(1792→512) → BatchNorm → SiLU → Dropout → Linear(512→1)`
-- Output: logit → sigmoid → probabilitas keganasan
-- Total parameter: **18,59 juta**
+- **Input:** 512x512 RGB (grayscale DICOM converted to 3-channel).
+- **Structure:** 9 MBConv blocks equipped with Squeeze-and-Excitation (SE) attention mechanisms.
+- **Custom Head:** `Linear(1792 → 512) → BatchNorm → SiLU → Dropout → Linear(512 → 1)`
+- **Output:** Logit → Sigmoid → Malignancy Probability.
+- **Total Parameters:** 18.59 Million.
 
-Detail arsitektur lengkap: [`backend/docs/MODEL.md`](backend/docs/MODEL.md)
+## Project Structure
 
-## Struktur Proyek
-
-```
+```text
 project-akhir-ai/
 ├── frontend/               # Next.js 14 (App Router)
-│   ├── app/                # Pages (/, /screening, /research, /privacy, /terms)
-│   ├── components/         # UI components (UploadZone, DICOMViewer, ResultsCard, dll)
-│   ├── contexts/           # ScreeningContext (state management)
+│   ├── app/                # Pages (/, /screening, /history, /research, /faq, etc.)
+│   ├── components/         # UI components (UploadZone, DICOMViewer, ResultsCard, etc.)
+│   ├── contexts/           # ScreeningContext (React State Management)
 │   └── lib/                # API client, types, constants, validators
 ├── backend/                # FastAPI
 │   ├── app/
 │   │   ├── main.py         # App setup, CORS, routing
-│   │   ├── config.py       # Settings (MODEL_PATH, CORS_ORIGINS)
-│   │   ├── api/routes.py   # Endpoints (/upload, /analyze, /demo, /health)
+│   │   ├── config.py       # Pydantic Settings (MODEL_PATH, CORS_ORIGINS)
+│   │   ├── api/routes.py   # API Endpoints (/upload, /analyze, /demo, /health)
 │   │   ├── services/
-│   │   │   ├── inference.py        # Arsitektur model + inference pipeline
-│   │   │   └── heatmap_generator.py # Grad-CAM heatmap
+│   │   │   ├── inference.py        # PyTorch Model Architecture & Inference
+│   │   │   └── heatmap_generator.py # Grad-CAM implementation (forward/backward hooks)
 │   │   └── lib/
-│   │       ├── birads.py           # Klasifikasi BI-RADS (Indonesia)
-│   │       └── preprocessing.py    # Preprocessing DICOM
-│   ├── models/             # Model weights (.pth files)
-│   └── docs/
-│       └── MODEL.md        # Dokumentasi arsitektur model
-├── DESIGN.md               # Panduan desain (Clinical Pearl, Trust Teal)
-├── AGENTS.md               # Instruksi untuk AI agent
-└── README.md               # File ini
+│   │       ├── birads.py           # BI-RADS clinical mapping
+│   │       └── dicom_processor.py  # DICOM metadata extraction
+│   └── models/             # PyTorch Model weights (.pth)
+├── docs/                   # Mermaid architecture diagrams
+├── DESIGN.md               # UI/UX Design System Guidelines
+└── README.md               # This file
 ```
 
-## Setup & Menjalankan
+## Local Setup & Development
 
-### Prasyarat
+### Prerequisites
 
 - **Frontend:** Node.js 18+
-- **Backend:** Python 3.11+, PyTorch (disarankan dengan CUDA jika ada GPU)
+- **Backend:** Python 3.11+ (CUDA-enabled PyTorch recommended if GPU is available)
 
-### Backend
+### Backend Setup
 
 ```bash
 cd backend
 python -m venv venv
+
+# Activate Virtual Environment
+source venv/bin/activate # Linux/macOS
 venv\Scripts\activate    # Windows
+
+# Install Dependencies
 pip install -r requirements.txt
 
-# Setup environment
-copy .env.example .env   # atau edit .env sesuai kebutuhan
+# Setup Environment Variables
+cp .env.example .env
 
-# Jalankan server
+# Run Server (Available at http://localhost:8000)
 uvicorn app.main:app --reload --port 8000
 ```
 
-### Frontend
+### Frontend Setup
 
 ```bash
 cd frontend
 npm install
-npm run dev              # http://localhost:3000
-```
 
-### Build Frontend (Production)
+# Setup Environment Variables
+cp .env.example .env.local
 
-```bash
-cd frontend
-npm run build            # Output di folder out/
+# Run Development Server (Available at http://localhost:3000)
+npm run dev
 ```
 
 ## Environment Variables
 
 ### Backend (`.env`)
 
-| Variable | Default | Deskripsi |
+| Variable | Default | Description |
 |----------|---------|-----------|
-| `MODEL_PATH` | `./models/model.safetensors` | Path ke model weights |
-| `CORS_ORIGINS` | `http://localhost:3000` | Origin yang diizinkan (pisah dengan koma) |
+| `MODEL_PATH` | `./models/mammo_ai_mvp_clean.pth` | Path to the PyTorch weights |
+| `CORS_ORIGINS` | `http://localhost:3000` | Allowed frontend origins (comma-separated) |
 
 ### Frontend (`.env.local`)
 
-| Variable | Deskripsi |
+| Variable | Description |
 |----------|-----------|
-| `NEXT_PUBLIC_API_BASE_URL` | URL backend (e.g., `http://localhost:8000`) |
-
-## Catatan Model Files
-
-Ada dua file model `.pth` di `backend/models/`:
-
-| File | Ukuran | Deskripsi |
-|------|--------|-----------|
-| `mammo_ai_mvp_weights.pth` | 71.2 MB | Checkpoint asli — state_dict model dengan prefix `backbone.` |
-| `mammo_ai_mvp_clean.pth` | 71.15 MB | State_dict yang sama — dibuat sebagai salinan bersih untuk development |
-
-Keduanya memiliki 713 key state_dict yang identik. Gunakan salah satu dengan mengatur `MODEL_PATH` di `.env`. File `.env` bawaan mengarah ke `mammo_ai_mvp_clean.pth`.
+| `NEXT_PUBLIC_API_BASE_URL` | Backend API URL (e.g., `http://localhost:8000`) |
 
 ## Deployment
 
-### Frontend → Vercel
+### Frontend ➔ Vercel
 
 ```bash
 cd frontend
 npm run build
-# Deploy folder out/ ke Vercel
-# Set NEXT_PUBLIC_API_BASE_URL di Vercel env vars
 ```
+Deploy the repository to Vercel and ensure `NEXT_PUBLIC_API_BASE_URL` is set in the Vercel Environment Variables pointing to your Railway backend URL.
 
-### Backend → Railway
+### Backend ➔ Railway
 
-```bash
-# Railway akan membaca start.sh
-# Set CORS_ORIGINS di Railway env vars
-# Pastikan RAM >= 512MB untuk PyTorch
-```
+Connect your repository to Railway. It will automatically detect Python and use `start.sh`.
+- Set `CORS_ORIGINS` in Railway env vars to your Vercel URL (e.g., `https://mammo-ai.vercel.app`).
+- **Note:** PyTorch requires at least 512MB RAM. Ensure your Railway service plan supports this.
 
-## Lisensi
+## Disclaimer & License
 
-Hak cipta © 2024. Proyek tugas akhir.
+**Clinical Decision Support Use Only.** This application is developed as an academic final project and is NOT a substitute for professional medical diagnosis. All AI findings must be validated by certified radiologists.
+
+Copyright © 2026. All rights reserved.
