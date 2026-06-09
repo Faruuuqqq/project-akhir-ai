@@ -54,6 +54,7 @@ async def upload_file(file: UploadFile = File(...)) -> UploadResponse:
         # Cache file in memory
         _file_cache[file_id] = {
             "bytes": file_bytes,
+            "filename": file.filename,
             "metadata": metadata,
             "timestamp": time.time()
         }
@@ -94,10 +95,12 @@ async def analyze_file(request: AnalyzeRequest) -> AnalysisResponse:
         processing_time = time.time() - start_time
         
         # Generate heatmap with model for Grad-CAM
+        is_dicom = study_data["filename"].lower().endswith('.dcm')
         heatmap_url = heatmap_generator.create_overlay(
             study_data["bytes"],
             result["probability"],
-            model=inference_service.model
+            model=inference_service.model,
+            is_dicom=is_dicom
         )
         
         # Determine BI-RADS

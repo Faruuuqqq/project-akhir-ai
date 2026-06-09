@@ -11,17 +11,21 @@ class HeatmapGenerator:
     def __init__(self, device='cpu'):
         self.device = device
     
-    def create_overlay(self, file_bytes: bytes, probability: float, model=None) -> str:
+    def create_overlay(self, file_bytes: bytes, probability: float, model=None, is_dicom=True) -> str:
         """
         Generate heatmap overlay using Grad-CAM if model available, else synthetic.
         """
         try:
-            ds = pydicom.dcmread(io.BytesIO(file_bytes))
-            pixel_array = ds.pixel_array
+            if is_dicom:
+                ds = pydicom.dcmread(io.BytesIO(file_bytes))
+                pixel_array = ds.pixel_array
+            else:
+                img = Image.open(io.BytesIO(file_bytes)).convert('L')
+                pixel_array = np.array(img)
             
             # Try Grad-CAM if model is available
             if model is not None and probability > 0.3:
-                heatmap = self._compute_gradcam(file_bytes, model)
+                heatmap = self._compute_gradcam(pixel_array, model)
             else:
                 # Fallback to synthetic heatmap
                 heatmap = self._generate_synthetic_heatmap(
@@ -43,14 +47,11 @@ class HeatmapGenerator:
             print(f"[WARN] Heatmap generation failed: {e}")
             return ""
     
-    def _compute_gradcam(self, file_bytes: bytes, model) -> np.ndarray:
+    def _compute_gradcam(self, pixel_array: np.ndarray, model) -> np.ndarray:
         """
         Compute Grad-CAM heatmap using forward/backward hooks on features[8].
         """
         try:
-            ds = pydicom.dcmread(io.BytesIO(file_bytes))
-            pixel_array = ds.pixel_array
-
             if pixel_array.max() > pixel_array.min():
                 pixel_array = ((pixel_array - pixel_array.min()) /
                               (pixel_array.max() - pixel_array.min()) * 255).astype(np.uint8)
