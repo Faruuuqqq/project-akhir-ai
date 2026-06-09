@@ -40,21 +40,21 @@ export default function AboutPage() {
     <div className="bg-clinical-pearl font-inter text-charcoal">
       <main className="mx-auto max-w-5xl px-6 pt-32 pb-32">
         <nav className="flex items-center gap-2 mb-8 text-xs font-mono text-slate" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-trust-teal transition-colors">Beranda</Link>
+          <Link href="/" className="hover:text-ribbon-pink transition-colors">Beranda</Link>
           <span className="text-light-silver">/</span>
-          <span className="text-trust-teal font-bold">Tentang</span>
+          <span className="text-ribbon-pink font-bold">Tentang</span>
         </nav>
 
         {/* Hero */}
         <section className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-trust-teal/5 rounded-full border border-trust-teal/10 text-trust-teal text-xs font-bold uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-ribbon-pink/5 rounded-full border border-ribbon-pink/10 text-ribbon-pink text-xs font-bold uppercase tracking-widest mb-6">
             <span className="material-symbols-outlined text-sm">psychiatry</span>
             MammoAI Precision
           </div>
           <h1 className="font-jakarta text-4xl md:text-5xl font-bold tracking-tight text-charcoal mb-6">
             Misi Kami: Deteksi Dini
             <br />
-            <span className="text-trust-teal">untuk Semua</span>
+            <span className="text-ribbon-pink">untuk Semua</span>
           </h1>
           <p className="text-lg leading-relaxed text-slate max-w-3xl mx-auto">
             MammoAI Precision adalah platform skrining kanker payudara berbasis kecerdasan buatan yang
@@ -66,13 +66,13 @@ export default function AboutPage() {
         {/* Values */}
         <section className="mb-20">
           <div className="text-center mb-10">
-            <span className="font-jakarta text-xs font-bold uppercase tracking-[0.15em] text-trust-teal mb-3 block">Nilai Inti</span>
+            <span className="font-jakarta text-xs font-bold uppercase tracking-[0.15em] text-ribbon-pink mb-3 block">Nilai Inti</span>
             <h2 className="font-jakarta text-3xl font-bold text-charcoal">Prinsip yang Kami Pegang</h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-6">
             {VALUES.map((v) => (
-              <div key={v.title} className="bg-white p-6 rounded-2xl border border-light-silver shadow-medical hover:shadow-teal-glow transition-all duration-300">
-                <div className="w-10 h-10 rounded-xl bg-trust-teal/5 flex items-center justify-center text-trust-teal mb-4">
+              <div key={v.title} className="bg-white p-6 rounded-2xl border border-light-silver shadow-medical hover:shadow-pink-glow transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-ribbon-pink/5 flex items-center justify-center text-ribbon-pink mb-4">
                   <span className="material-symbols-outlined">{v.icon}</span>
                 </div>
                 <h3 className="font-jakarta text-lg font-bold text-charcoal mb-2">{v.title}</h3>
@@ -91,7 +91,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { label: 'Frontend', tech: 'Next.js 14', icon: 'code', color: 'text-calm-blue' },
-              { label: 'Backend', tech: 'FastAPI', icon: 'dns', color: 'text-trust-teal' },
+              { label: 'Backend', tech: 'FastAPI', icon: 'dns', color: 'text-ribbon-pink' },
               { label: 'Model', tech: 'PyTorch', icon: 'memory', color: 'text-muted-rose' },
               { label: 'Deploy', tech: 'Vercel + Railway', icon: 'cloud', color: 'text-warning' },
             ].map((t) => (
@@ -107,16 +107,16 @@ export default function AboutPage() {
         {/* Timeline */}
         <section className="mb-20">
           <div className="text-center mb-10">
-            <span className="font-jakarta text-xs font-bold uppercase tracking-[0.15em] text-trust-teal mb-3 block">Perjalanan</span>
+            <span className="font-jakarta text-xs font-bold uppercase tracking-[0.15em] text-ribbon-pink mb-3 block">Perjalanan</span>
             <h2 className="font-jakarta text-3xl font-bold text-charcoal">Rilis & Milestone</h2>
           </div>
           <div className="relative">
-            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-trust-teal via-trust-teal/30 to-transparent" aria-hidden="true" />
+            <div className="absolute left-6 top-0 bottom-0 w-px bg-gradient-to-b from-ribbon-pink via-ribbon-pink/30 to-transparent" aria-hidden="true" />
             <div className="space-y-8">
               {TIMELINE.map((item) => (
                 <div key={item.year} className="relative pl-16">
                   <div className="absolute left-0 top-1 w-12 h-12 rounded-xl bg-white border border-light-silver shadow-sm flex items-center justify-center z-10">
-                    <span className="font-jakarta text-[10px] font-bold text-trust-teal leading-tight text-center">{item.year.split(' ')[1]}<br />{item.year.split(' ')[0]}</span>
+                    <span className="font-jakarta text-[10px] font-bold text-ribbon-pink leading-tight text-center">{item.year.split(' ')[1]}<br />{item.year.split(' ')[0]}</span>
                   </div>
                   <div className="bg-white p-5 rounded-xl border border-light-silver shadow-sm hover:shadow-medical transition-shadow">
                     <h3 className="font-jakarta text-base font-bold text-charcoal mb-1">{item.title}</h3>
@@ -129,7 +129,7 @@ export default function AboutPage() {
         </section>
 
         {/* Disclaimer */}
-        <section className="bg-warm-amber/10 border-l-4 border-warning rounded-r-2xl p-6 md:p-8">
+        <section className="bg-ribbon-orange/10 border-l-4 border-warning rounded-r-2xl p-6 md:p-8">
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-warning shrink-0 mt-0.5">warning</span>
             <div>

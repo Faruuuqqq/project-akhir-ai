@@ -23,8 +23,8 @@ class HeatmapGenerator:
                 img = Image.open(io.BytesIO(file_bytes)).convert('L')
                 pixel_array = np.array(img)
             
-            # Try Grad-CAM if model is available
-            if model is not None and probability > 0.3:
+            # Always use Grad-CAM if model is available to visualize model focus
+            if model is not None:
                 heatmap = self._compute_gradcam(pixel_array, model)
             else:
                 # Fallback to synthetic heatmap

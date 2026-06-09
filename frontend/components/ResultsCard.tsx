@@ -23,7 +23,7 @@ function FindingRow({ finding }: { finding: FindingDetail }) {
   const isSuspicious = finding.biRadsAssessment === 'BI-RADS 4' || finding.biRadsAssessment === 'BI-RADS 5';
   return (
     <div className="flex items-start gap-3 py-3 border-b border-light-silver last:border-b-0">
-      <span className={`material-symbols-outlined mt-0.5 ${isSuspicious ? 'text-muted-rose' : 'text-trust-teal'}`}>
+      <span className={`material-symbols-outlined mt-0.5 ${isSuspicious ? 'text-muted-rose' : 'text-ribbon-pink'}`}>
         {finding.type === 'Massa' ? 'circle' : finding.type === 'Kalsifikasi' ? 'grain' : finding.type === 'Distorsi Arsitektur' ? 'width' : 'right_panel_close'}
       </span>
       <div className="flex-1 min-w-0">
@@ -73,7 +73,7 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
       {/* REPORT HEADER */}
       <motion.div variants={fadeUp} className="rounded-2xl border border-light-silver bg-white p-6 shadow-medical flex justify-between items-start">
         <div>
-          <div className="flex items-center gap-2 mb-1 text-trust-teal">
+          <div className="flex items-center gap-2 mb-1 text-ribbon-pink">
             <span className="material-symbols-outlined text-base">description</span>
             <span className="font-jakarta text-xs font-bold uppercase tracking-[0.1em] text-slate">Laporan Hasil Skrining</span>
           </div>
@@ -93,8 +93,8 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
           disabled={saved}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
             saved 
-              ? 'bg-trust-teal/10 text-trust-teal border border-trust-teal/20'
-              : 'bg-white text-charcoal border border-light-silver hover:bg-clinical-pearl hover:border-trust-teal/30 hover:text-trust-teal'
+              ? 'bg-ribbon-pink/10 text-ribbon-pink border border-ribbon-pink/20'
+              : 'bg-white text-charcoal border border-light-silver hover:bg-clinical-pearl hover:border-ribbon-pink/30 hover:text-ribbon-pink'
           }`}
         >
           <span className="material-symbols-outlined text-[16px]">{saved ? 'check_circle' : 'bookmark_add'}</span>
@@ -103,7 +103,7 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
       </motion.div>
 
       {/* AI PROBABILITY SCORE */}
-      <motion.div variants={fadeUp} className="rounded-2xl border border-light-silver bg-white p-8 shadow-medical transition-all hover:shadow-teal-glow hover:border-trust-teal/30 group">
+      <motion.div variants={fadeUp} className="rounded-2xl border border-light-silver bg-white p-8 shadow-medical transition-all hover:shadow-pink-glow hover:border-ribbon-pink/30 group">
         <p className="mb-4 font-jakarta text-sm font-semibold uppercase tracking-[0.1em] text-slate">
           Probabilitas Indikasi Malignansi
         </p>
@@ -156,7 +156,7 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
       {findings.length > 0 && (
         <motion.div variants={fadeUp} className="rounded-2xl border border-light-silver bg-white p-8 shadow-medical">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-trust-teal material-symbols-outlined">list_alt</span>
+            <span className="text-ribbon-pink material-symbols-outlined">list_alt</span>
             <h4 className="font-jakarta text-xs font-bold uppercase tracking-[0.1em] text-charcoal">
               Temuan Radiologis ({findings.length})
             </h4>
@@ -189,7 +189,7 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
         </div>
         <h4 className="mb-2 font-jakarta text-xl font-bold text-charcoal">{analysis.biRads}</h4>
         <p className="mb-4 text-sm text-charcoal font-medium">{analysis.biRadsDescription}</p>
-        <div className="bg-clinical-pearl px-4 py-3 rounded-lg border-l-2 border-trust-teal">
+        <div className="bg-clinical-pearl px-4 py-3 rounded-lg border-l-2 border-ribbon-pink">
           <p className="text-sm font-medium text-slate">
             <strong className="text-charcoal font-bold">Rekomendasi:</strong> {analysis.biRadsRecommendation}
           </p>
@@ -198,7 +198,7 @@ export const ResultsCard: React.FC<ResultsCardProps> = ({ analysis }) => {
 
       {/* AI EXPLANATION */}
       <motion.div variants={fadeUp} className="rounded-2xl border border-light-silver bg-white p-8 shadow-medical">
-        <div className="flex items-center gap-2 mb-4 text-trust-teal">
+        <div className="flex items-center gap-2 mb-4 text-ribbon-pink">
           <span className="material-symbols-outlined">analytics</span>
           <h4 className="font-jakarta text-xs font-bold uppercase tracking-[0.1em] text-charcoal">Analisis AI</h4>
         </div>

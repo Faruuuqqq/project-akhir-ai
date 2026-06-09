@@ -53,7 +53,7 @@ const ARCH_SECTIONS = [
     title: 'MBConv Blocks (1–7)',
     code: 'features[1..7]',
     desc: 'Tujuh blok MBConv dengan expansion ratio 6, depthwise separable conv, squeeze-and-excitation. Dimensi spasial menyusut dari 256→8, saluran meningkat 24→448.',
-    color: 'from-trust-teal/20 to-teal-dark/10',
+    color: 'from-ribbon-pink/20 to-ribbon-dark/10',
   },
   {
     title: 'Final 1×1 Expansion',
@@ -83,21 +83,21 @@ export default function HowItWorksPage() {
     <div className="bg-clinical-pearl font-inter text-charcoal">
       <main className="mx-auto max-w-5xl px-6 pt-32 pb-32">
         <nav className="flex items-center gap-2 mb-8 text-xs font-mono text-slate" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-trust-teal transition-colors">Beranda</Link>
+          <Link href="/" className="hover:text-ribbon-pink transition-colors">Beranda</Link>
           <span className="text-light-silver">/</span>
-          <span className="text-trust-teal font-bold">Cara Kerja</span>
+          <span className="text-ribbon-pink font-bold">Cara Kerja</span>
         </nav>
 
         {/* Hero */}
         <section className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-trust-teal/5 rounded-full border border-trust-teal/10 text-trust-teal text-xs font-bold uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-ribbon-pink/5 rounded-full border border-ribbon-pink/10 text-ribbon-pink text-xs font-bold uppercase tracking-widest mb-6">
             <span className="material-symbols-outlined text-sm">visibility</span>
             Transparansi Algoritma
           </div>
           <h1 className="font-jakarta text-4xl md:text-5xl font-bold tracking-tight text-charcoal mb-6">
             Bagaimana AI Mendeteksi
             <br />
-            <span className="text-trust-teal">Kanker Payudara?</span>
+            <span className="text-ribbon-pink">Kanker Payudara?</span>
           </h1>
           <p className="text-lg leading-relaxed text-slate max-w-3xl mx-auto">
             Setiap analisis melalui enam tahap — dari unggahan citra hingga laporan diagnostik siap baca.
@@ -108,23 +108,23 @@ export default function HowItWorksPage() {
         {/* Pipeline */}
         <section className="mb-24">
           <div className="relative">
-            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-trust-teal via-trust-teal/30 to-transparent hidden md:block" aria-hidden="true" />
+            <div className="absolute left-8 top-0 bottom-0 w-px bg-gradient-to-b from-ribbon-pink via-ribbon-pink/30 to-transparent hidden md:block" aria-hidden="true" />
             <div className="space-y-12">
               {PIPELINE_STEPS.map((step, i) => (
                 <div key={i} className="relative md:pl-20">
-                  <div className="hidden md:flex absolute left-0 top-0 w-16 h-16 rounded-2xl bg-white border border-light-silver shadow-medical items-center justify-center text-trust-teal z-10">
+                  <div className="hidden md:flex absolute left-0 top-0 w-16 h-16 rounded-2xl bg-white border border-light-silver shadow-medical items-center justify-center text-ribbon-pink z-10">
                     <span className="material-symbols-outlined text-2xl">{step.icon}</span>
                   </div>
-                  <div className="bg-white p-6 md:p-8 rounded-2xl border border-light-silver shadow-medical hover:shadow-teal-glow transition-shadow duration-300">
+                  <div className="bg-white p-6 md:p-8 rounded-2xl border border-light-silver shadow-medical hover:shadow-pink-glow transition-shadow duration-300">
                     <div className="flex items-center gap-3 mb-3 md:hidden">
-                      <span className="material-symbols-outlined text-trust-teal">{step.icon}</span>
-                      <span className="font-mono text-xs text-trust-teal/60 font-bold">LANGKAH {i + 1}</span>
+                      <span className="material-symbols-outlined text-ribbon-pink">{step.icon}</span>
+                      <span className="font-mono text-xs text-ribbon-pink/60 font-bold">LANGKAH {i + 1}</span>
                     </div>
-                    <span className="hidden md:block font-mono text-xs text-trust-teal/60 font-bold mb-2">LANGKAH {i + 1}</span>
+                    <span className="hidden md:block font-mono text-xs text-ribbon-pink/60 font-bold mb-2">LANGKAH {i + 1}</span>
                     <h2 className="font-jakarta text-xl font-bold text-charcoal mb-3">{step.title}</h2>
                     <p className="text-sm text-slate leading-relaxed mb-4 max-w-2xl">{step.desc}</p>
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-clinical-pearl rounded-lg text-xs font-mono text-slate border border-light-silver">
-                      <span className="material-symbols-outlined text-[14px] text-trust-teal">info</span>
+                      <span className="material-symbols-outlined text-[14px] text-ribbon-pink">info</span>
                       {step.detail}
                     </div>
                   </div>
@@ -137,7 +137,7 @@ export default function HowItWorksPage() {
         {/* Architecture Summary */}
         <section className="mb-24">
           <div className="text-center mb-12">
-            <span className="font-jakarta text-xs font-bold uppercase tracking-[0.15em] text-trust-teal mb-3 block">Arsitektur Model</span>
+            <span className="font-jakarta text-xs font-bold uppercase tracking-[0.15em] text-ribbon-pink mb-3 block">Arsitektur Model</span>
             <h2 className="font-jakarta text-3xl md:text-4xl font-bold text-charcoal mb-4">EfficientNet-B4</h2>
             <p className="text-slate max-w-2xl mx-auto">
               Model berbasis EfficientNet-B4 dengan 18,59 juta parameter yang dioptimalkan untuk klasifikasi mammografi.
@@ -147,7 +147,7 @@ export default function HowItWorksPage() {
           <div className="grid md:grid-cols-4 gap-4 mb-8">
             {METRICS.map((m) => (
               <div key={m.label} className="bg-white p-5 rounded-xl border border-light-silver shadow-sm text-center">
-                <div className="font-jakarta text-2xl font-bold text-trust-teal mb-1">{m.value}</div>
+                <div className="font-jakarta text-2xl font-bold text-ribbon-pink mb-1">{m.value}</div>
                 <div className="text-xs text-slate font-medium">{m.label}</div>
               </div>
             ))}
@@ -167,14 +167,14 @@ export default function HowItWorksPage() {
         </section>
 
         {/* Call to Action */}
-        <section className="text-center bg-gradient-to-br from-trust-teal to-teal-dark rounded-3xl p-12 md:p-16 shadow-teal-glow">
+        <section className="text-center bg-gradient-to-br from-ribbon-pink to-ribbon-dark rounded-3xl p-12 md:p-16 shadow-pink-glow">
           <h2 className="font-jakarta text-3xl font-bold text-white mb-4">Siap Melakukan Skrining?</h2>
           <p className="text-white/80 max-w-xl mx-auto mb-8">
             Gunakan alat diagnostik kami untuk analisis citra mamografi secara cepat dan presisi. Hasil langsung dalam hitungan detik.
           </p>
           <Link
             href="/screening"
-            className="inline-flex items-center gap-2 bg-white text-trust-teal px-8 py-4 rounded-xl font-jakarta font-bold text-sm hover:bg-clinical-pearl transition-all hover:-translate-y-[1px]"
+            className="inline-flex items-center gap-2 bg-white text-ribbon-pink px-8 py-4 rounded-xl font-jakarta font-bold text-sm hover:bg-clinical-pearl transition-all hover:-translate-y-[1px]"
           >
             Mulai Skrining Sekarang
             <span className="material-symbols-outlined text-sm">arrow_forward</span>

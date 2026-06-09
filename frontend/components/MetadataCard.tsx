@@ -10,9 +10,11 @@ interface MetadataCardProps {
 
 function MetaRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="group hover:bg-clinical-pearl px-3 py-2 -mx-3 rounded-md transition-colors">
-      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-slate group-hover:text-trust-teal transition-colors">{label}</p>
-      <p className="text-sm font-medium text-charcoal">{children}</p>
+    <div className="group hover:bg-ribbon-pink/5 px-4 py-2.5 -mx-4 rounded-r-lg border-l-2 border-transparent hover:border-ribbon-pink transition-all duration-300 cursor-default">
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.15em] text-slate group-hover:text-ribbon-pink transition-colors">{label}</p>
+      <div className="text-sm font-medium text-charcoal group-hover:translate-x-1 transition-transform duration-300">
+        {children}
+      </div>
     </div>
   );
 }

@@ -84,7 +84,7 @@ function FaqAccordion({ item, isOpen, onToggle }: { item: FaqItem; isOpen: boole
         aria-expanded={isOpen}
       >
         <span className="font-jakarta text-sm md:text-base font-bold text-charcoal leading-snug flex-1">{item.q}</span>
-        <span className={`material-symbols-outlined shrink-0 text-slate transition-transform duration-300 ${isOpen ? 'rotate-180 text-trust-teal' : ''}`}>
+        <span className={`material-symbols-outlined shrink-0 text-slate transition-transform duration-300 ${isOpen ? 'rotate-180 text-ribbon-pink' : ''}`}>
           expand_more
         </span>
       </button>
@@ -98,7 +98,7 @@ function FaqAccordion({ item, isOpen, onToggle }: { item: FaqItem; isOpen: boole
             className="overflow-hidden"
           >
             <div className="px-5 md:px-6 pb-5 md:pb-6">
-              <div className="w-8 h-px bg-trust-teal/30 mb-4" />
+              <div className="w-8 h-px bg-ribbon-pink/30 mb-4" />
               <p className="text-sm text-slate leading-relaxed">{item.a}</p>
             </div>
           </motion.div>
@@ -118,9 +118,9 @@ export default function FaqPage() {
     <div className="bg-clinical-pearl font-inter text-charcoal">
       <main className="mx-auto max-w-4xl px-6 pt-32 pb-32">
         <nav className="flex items-center gap-2 mb-8 text-xs font-mono text-slate" aria-label="Breadcrumb">
-          <Link href="/" className="hover:text-trust-teal transition-colors">Beranda</Link>
+          <Link href="/" className="hover:text-ribbon-pink transition-colors">Beranda</Link>
           <span className="text-light-silver">/</span>
-          <span className="text-trust-teal font-bold">FAQ</span>
+          <span className="text-ribbon-pink font-bold">FAQ</span>
         </nav>
 
         <section className="text-center mb-12">
@@ -144,8 +144,8 @@ export default function FaqPage() {
               onClick={() => { setActiveCategory(cat); setOpenIndex(null); }}
               className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
                 activeCategory === cat
-                  ? 'bg-trust-teal text-white shadow-teal-glow'
-                  : 'bg-white border border-light-silver text-slate hover:border-trust-teal/30 hover:text-trust-teal'
+                  ? 'bg-ribbon-pink text-white shadow-pink-glow'
+                  : 'bg-white border border-light-silver text-slate hover:border-ribbon-pink/30 hover:text-ribbon-pink'
               }`}
             >
               {cat}
@@ -174,8 +174,8 @@ export default function FaqPage() {
 
         {/* Still have questions */}
         <section className="mt-16 text-center bg-white rounded-3xl border border-light-silver p-10 shadow-medical">
-          <div className="w-12 h-12 rounded-xl bg-trust-teal/5 flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-trust-teal">forum</span>
+          <div className="w-12 h-12 rounded-xl bg-ribbon-pink/5 flex items-center justify-center mx-auto mb-4">
+            <span className="material-symbols-outlined text-ribbon-pink">forum</span>
           </div>
           <h2 className="font-jakarta text-xl font-bold text-charcoal mb-2">Masih Punya Pertanyaan?</h2>
           <p className="text-sm text-slate mb-6 max-w-md mx-auto">
@@ -183,7 +183,7 @@ export default function FaqPage() {
           </p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 bg-trust-teal text-white px-6 py-3 rounded-xl font-jakarta font-bold text-sm hover:bg-teal-dark transition-all hover:-translate-y-[1px]"
+            className="inline-flex items-center gap-2 bg-ribbon-pink text-white px-6 py-3 rounded-xl font-jakarta font-bold text-sm hover:bg-ribbon-dark transition-all hover:-translate-y-[1px]"
           >
             Hubungi Kami
             <span className="material-symbols-outlined text-sm">arrow_forward</span>

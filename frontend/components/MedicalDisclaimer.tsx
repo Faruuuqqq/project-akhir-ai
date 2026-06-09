@@ -6,7 +6,7 @@ import { COLORS } from '@/lib/constants';
 export const MedicalDisclaimer: React.FC = () => {
   return (
     <div
-      className="rounded-lg border-l-4 bg-warm-amber/10 p-5 shadow-sm"
+      className="rounded-lg border-l-4 bg-ribbon-orange/10 p-5 shadow-sm"
       style={{ borderColor: COLORS.warning }}
     >
       <div className="flex items-center gap-2 mb-2" style={{ color: COLORS.warning }}>
