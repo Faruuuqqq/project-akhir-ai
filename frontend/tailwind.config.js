@@ -11,11 +11,13 @@ module.exports = {
           'mri-black': '#121417',
           'charcoal': '#1F2937',
           'slate': '#64748B',
-          'ribbon-pink': '#E64C7E',
-          'ribbon-dark': '#C1124B',
+          // Theme colors mapped to Breast Cancer Ribbon colors
+          'trust-teal': '#E64C7E', // Ribbon Pink
+          'teal-dark': '#C1124B',  // Ribbon Dark Pink
           'calm-blue': '#3B82F6',
           'muted-rose': '#BE123C',
-          'ribbon-orange': '#F9A029',
+          'warning': '#F9A029',    // Ribbon Orange
+          'warm-amber': '#F9A029', // Ribbon Orange
           'light-silver': '#E2E8F0',
         },
       fontFamily: {
